@@ -1,0 +1,14 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+body{
+  font-size: 16px;
+}
+.page-bg{
+  background-color: #F6F6F6;
+}
+
+ul{
+  list-style: none;
+}

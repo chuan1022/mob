@@ -1,0 +1,38 @@
+
+/*重置antd样式*/
+
+
+
+:global{
+    @import './theme.less';
+
+    //按钮
+    .am-button{
+        &.am-btn-disabled{
+            background:rgba(244,244,244,1);
+            color:#F4F4F4;
+            opacity: 1;
+        }
+    }
+    .am-button-primary{
+        background-color:@color-theme;
+        &:before{
+            border: 1px solid @color-theme !important;
+        }
+    }
+    
+    .am-btn-theme-active{
+        opacity: .8;
+        background-color:@color-theme;
+        &:before{
+            border: 1px solid @color-theme !important;
+        }
+    }
+
+    .am-button-small{
+        height: 28px;
+        border-radius: 14px;
+        line-height: 28px;
+    }
+
+}

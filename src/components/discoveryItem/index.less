@@ -1,0 +1,46 @@
+.item{
+   width: 100%;
+   box-sizing: border-box;
+    .item-img{
+        width:100%;
+    }
+    .item-content{
+        padding: 10px;
+        background: #fff;
+        box-sizing: border-box;
+    }
+    .item-desc{
+        overflow: hidden;
+        line-height: 18px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    &.item-odd{
+      //  padding-left: 15px;
+      //  padding-right: 8px;
+        .item-img{
+            height: 222px;
+        }
+        .item-desc{
+            height: 18px;
+            
+        }
+    }
+    &.item-even{
+        // padding-right: 15px;
+        // padding-left: 8px;
+        .item-img{
+            height: 242px;
+        }
+        .item-desc{
+            height: 36px;                      
+        }
+    }
+    .item-userinfo{
+        margin: 15px 0 0 0;
+    }
+    .item-zan{
+        flex: 0 0 20px;
+        background: url('../../assets/images/sprite1.png') no-repeat left top;
+    }
+}
