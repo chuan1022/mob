@@ -158,7 +158,7 @@ class Discovery extends Component {
           <div>
             <div className="flex ">
               <div className="item flex-1 text-align-center"></div>
-              <div className="item"></div>
+              <div className="item">  </div>
               <div className="item"></div>
               <div className="item"></div>
             </div>
