@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import dva, {connect} from 'dva';
 import Link from 'umi/link';
 
-
-import VrtabBar from '@/components/tabbar'
 import { Carousel, WhiteSpace,Flex,NoticeBar,Icon,Grid} from 'antd-mobile';
 
 import {findType,finding} from '@/services/discovery';
 
+import VrtabBar from '@/components/tabbar'
+import BussCard from '@/components/BussCard'
 
 import './index.less';
 import '@/styles/mixins.less';
@@ -42,7 +42,6 @@ class Home extends Component {
 
     this.getFindType = this.getFindType.bind(this);
   }
-
 
   componentDidMount() {
     setTimeout(() => {
@@ -111,8 +110,24 @@ class Home extends Component {
     return (
       <div className="page-home page-bg full-wrapper" id="page-home">
         <div className="main-wrapper">
-          <div className="top-header">
 
+          {/* search */}
+         
+          <div className="top-header">
+            <div className="flex align-items-center ">
+              <div className="padding-right-10">
+                郑州
+              </div>
+              <div className="flex-1">
+                <input style={{
+                  width:'100%',
+                  display:'block'
+                }}  type="text"/>
+              </div>
+              <div className="padding-left-15">
+                客服
+              </div>
+            </div>
           </div>
           <div className="content-wrapper">
 
@@ -229,40 +244,69 @@ class Home extends Component {
             <WhiteSpace size="lg"/>
             {/* panle1 */}
             <div className="topactive-wrapper">
-            <Grid 
-              data={new Array(4)}
-              hasLine={false}
-              columnNum={2}
-              renderItem={dataItem => (
-                <div style={{ padding: '9px',textAlign:'left' }}>
-                  <p className="font-size-15 text-color-333 font-weight-bold line-height-s">全景团</p>
-                  <p className="font-size-12 text-color-999 line-height-20 line-height-s">每日上新</p>
-                  <WhiteSpace />
-                  <Flex>
-                    <Flex.Item className="text-align-center margin-right-10">
-                      <img width="100%" height="100%" src={defaultFood} alt=""/>
-                      <p className=" padding-top-10">
-                        <span className="font-size-12 text-color-theme">￥399</span>
-                        <span 
-                        style={{
-                          fontSize:'10px'
-                        }}
-                        className=" text-color-666">￥299</span>
-                      </p>
-                    </Flex.Item>
-                    <Flex.Item className="text-align-center margin-right-10">
-                      <img width="100%" height="100%" src={defaultFood} alt=""/>
-                      <p className="text-color-333 font-size-13 padding-top-10">美食</p>
-                    </Flex.Item>
-                  </Flex>
-                </div>
-              )}
-            />
+              <Grid 
+                data={new Array(4)}
+                // hasLine={false}
+                columnNum={2}
+                activeStyle={false}
+                renderItem={dataItem => (
+                  <div style={{ padding: '10px',textAlign:'left' }}>
+                    <p className="font-size-15 text-color-333 font-weight-bold line-height-l">全景团</p>
+                    <p className="font-size-12 text-color-999 line-height-20 line-height-s">每日上新</p>
+                    <WhiteSpace />
+                    <Flex>
+                      <Flex.Item className="text-align-center margin-right-10">
+                        <img width="100%" height="100%" src={defaultFood} alt=""/>
+                        <p className=" padding-top-5">
+                          <span className="font-size-12 text-color-theme">￥399</span>
+                          <span 
+                          style={{
+                            fontSize:'10px'
+                          }}
+                          className=" text-color-666">￥299</span>
+                        </p>
+                      </Flex.Item>
+                      <Flex.Item className="text-align-center margin-right-10">
+                        <img width="100%" height="100%" src={defaultFood} alt=""/>
+                        <p className=" padding-top-5">
+                          <span className="font-size-12 text-color-theme">￥399</span>
+                          <span 
+                          style={{
+                            fontSize:'10px'
+                          }}
+                          className=" text-color-666">￥299</span>
+                        </p>
+                      </Flex.Item>
+                    </Flex>
+                  </div>
+                )}
+              />
             </div>
             <WhiteSpace size="lg"/>
-
+            
+            {/* 精选推荐 */}
+            <div className="recommend-wrapper">
+              <div className="recommend-title text-align-center">
+                <h3 className="text-color-666 font-size-17 line-height-m">精选推荐</h3>
+                <p className="text-color-999 font-size-12 line-height-m">小编为你整理的品质好店</p>
+                <WhiteSpace size="lg"/>
+              </div>
+              <div className="recommend-content">
+                <BussCard />
+                <WhiteSpace size="lg"/>
+                <BussCard />
+                <WhiteSpace size="lg"/>
+                <BussCard />
+                <WhiteSpace size="lg"/>
+                <BussCard />
+                <WhiteSpace size="lg"/>
+                <BussCard />
+                <WhiteSpace size="lg"/>
+              </div>
+            </div>
           </div>
         </div>
+        
         <div className="tabbar">
           <VrtabBar />
         </div>
