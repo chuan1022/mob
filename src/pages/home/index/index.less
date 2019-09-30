@@ -1,0 +1,52 @@
+
+:global{
+  @import '../../../styles/theme.less';
+  @tarbar-height:50px;
+  .full-wrapper{
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    .main-wrapper{
+      height: 100%;
+     
+      padding-bottom: @tarbar-height;
+      box-sizing: border-box;
+      overflow-y: scroll;
+      background: #F6F6F6;
+     
+      .top-header{
+
+      }
+      .content-wrapper{
+        box-sizing: border-box;
+        padding: 0 15px;
+      }
+    }
+  }
+  .tabbar{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: @tarbar-height;
+    background: #ddd;
+    z-index: 2;
+  }
+
+  .banner-wrapper{
+     padding-top: 50px;
+  }
+  .nav-wrapper{
+    border-bottom: 1px solid #ECEBEB;
+  }
+  .notice-wrapper{
+    .am-notice-bar{
+      background: transparent;
+      color: #666666;
+    }
+  }
+  .topactive-wrapper{
+    border-radius: 8px;
+    overflow: hidden;
+  }
+}

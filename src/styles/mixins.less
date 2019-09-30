@@ -1,5 +1,7 @@
 
 :global{
+  @import './theme.less';
+
 .ellipsis{
     overflow: hidden;
     text-overflow: ellipsis;
@@ -15,6 +17,9 @@
     -webkit-box-orient: vertical;
 }
 //text color
+.text-color-theme{
+  color: @color-theme;
+}
 .text-color-333{
   color: #333;
 }
@@ -24,6 +29,7 @@
 .text-color-999{
   color: #999;
 }
+
 //text-align
 .text-align-center{
   text-align: center;
@@ -39,8 +45,14 @@
 .font-size-12{
   font-size: 12px;
 }
+.font-size-13{
+  font-size: 13px;
+}
 .font-size-14{
   font-size: 14px;
+}
+.font-size-15{
+  font-size: 15px;
 }
 .font-size-16{
   font-size: 16px;
@@ -133,6 +145,15 @@
 }
 .lh-20{
   line-height: 20px;
+}
+.line-height-s{
+  line-height: 1.2;
+}
+.line-height-m{
+  line-height: 1.5;
+}
+.line-height-l{
+  line-height: 2;
 }
 .line-height-16{
   line-height: 16px;

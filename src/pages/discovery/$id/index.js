@@ -99,7 +99,7 @@ class Discovery extends Component {
         <WhiteSpace />
         <div className="comment-list margin10-t">
           <WhiteSpace />
-          <p className="f17 text-color-333 font-bold">评论（{this.state.comment.length}）</p>
+          <p className="f17 text-color-333 font-bold">评论({this.state.comment.length})</p>
           <WhiteSpace size="lg"/>
           <div className="flex align-item-center justify-content-start align-items-center">
             <div style={{
@@ -127,6 +127,29 @@ class Discovery extends Component {
           <div className="flex align-item-center justify-content-start align-items-start">
             
             <ul className="comment-list">
+              <li className="comment-item">
+                <div className="flex align-items-start justify-content-start comment-list-card">
+                    <div style={{
+                      marginRight:'15px'
+                    }}>
+                      <Avatar size={40} />
+                    </div>
+                    <div className="flex-1 flex align-items-start justify-content-between border-bottom">
+                      <div>
+                        <p className="text-color-333 font-size-15">user</p>
+                        <p className="font-size-14 margin-top-10 margin-bottom-10 text-color-999">
+                          <span>2019.10.10</span>
+                          <span className="padding-left-15">15:20</span>
+                        </p>
+                        <p className="text-color-333 font-size-15 line-height-18">
+                          又去了一次真不错，推荐又去了一次真不错，推荐又去了一次真不错，推荐又去了一次真不错，推荐又去了一次真不错，推荐又去了一次真不错，推荐
+                        </p>
+                      </div>
+                      <span className="zan">点赞</span>
+                    </div>
+                    
+                </div> 
+              </li>
               <li className="comment-item">
                 <div className="flex align-items-start justify-content-start comment-list-card">
                     <div style={{

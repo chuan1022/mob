@@ -1,5 +1,6 @@
 const routes = [
-    { path: '/', component: './discovery/index' },
+    { path: '/', component: './home/index' },
+    { path: '/home', component: './home/index' },
     { path: '/discovery', component: './discovery/index' },
     { path: '/discovery/:id', component: './discovery/$id' }
 ];
