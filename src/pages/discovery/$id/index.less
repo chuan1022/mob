@@ -1,16 +1,65 @@
+:global {
+  @import  '../../../styles/theme.less';
 
-:global{
-@import '../../../styles/theme.less';
+  #page-page-discoverydetail {}
 
-   #page-page-discoverydetail{
+  .page-discoverydetail {
+    padding: 15px;
+    box-sizing: border-box;
+    background: #fff;
 
-   }
-   .page-discoverydetail{
-       padding: 15px;
-       box-sizing: border-box;
-       background: #fff;
-       .userard-wrapper{
-           margin: 10px 0;
-       }
-   }
+    .userard-wrapper {
+      margin: 10px 0;
+    }
+
+    .sees-num {
+      margin: 22px 0 12px 0;
+    }
+
+    .zanList {
+      border-top: 1px solid #ECEBEB;
+      border-bottom: 1px solid #ECEBEB;
+
+      .avatar {
+        display: inline-block;
+        margin: 0 7px;
+      }
+    }
+    .comment-input-list{
+      .am-list-body{
+        &:after{
+          content:unset;
+        }
+        &:before{
+          content:unset;
+        }
+      }
+      
+    }
+    .comment-input{
+      height:34px;
+      background:rgba(244,244,244,1);
+      border-radius:17px;
+      border: none;
+      padding-left: 23px;
+
+    }
+  }
+  
+  .comment-list{
+    .comment-item{
+      padding: 24px 0;
+      .border-bottom{
+        padding-bottom: 9px;
+        border-bottom: 1px solid #ECEBEB;
+      }
+      .comment-list-card{
+        .zan{
+          padding: 10px;
+          width: 20px;
+          flex: 0 0 40px;
+        }
+      }
+    }
+  }
 }
