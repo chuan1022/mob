@@ -67,7 +67,7 @@ class Discovery extends Component {
     const { getFieldProps, getFieldError } = this.props.form;
     
     return (
-      <div className="page-discoverydetail" id="page-discoverydetail">
+      <div className="page-discoverydetail has-bottom-bar" id="page-discoverydetail">
         <WhiteSpace />
         <UserCard />
         <WhiteSpace />
@@ -153,17 +153,25 @@ class Discovery extends Component {
             </ul>
           </div>)
           }
-    
+        </div>
+            
           {/* 底部工具栏 */}
-          <div>
-            <div className="flex ">
-              <div className="item flex-1 text-align-center"></div>
-              <div className="item">  </div>
-              <div className="item"></div>
-              <div className="item"></div>
+          <div className="bottom-bar">
+            <div className="flex text-align-center">
+              <div className="item flex-1 ">
+                点赞
+              </div>
+              <div className="item flex-1">
+                评论
+              </div>
+              <div className="item flex-1">
+                收藏
+              </div>
+              <div className="item flex-1">
+                分享
+              </div>
             </div>
           </div>
-        </div>
       </div >
     );
   }
