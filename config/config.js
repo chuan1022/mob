@@ -12,6 +12,7 @@ export default {
             dll: true
         }],
     ],
+    history: 'hash',
     proxy: {
         '/find/api': {
           target: 'http://dev.gateway.360vrsh.com',

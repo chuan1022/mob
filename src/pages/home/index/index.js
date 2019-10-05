@@ -292,7 +292,7 @@ class Home extends Component {
                 <WhiteSpace size="lg"/>
               </div>
               <div className="recommend-content">
-                <BussCard />
+                <BussCard size={104} type="home"/>
                 <WhiteSpace size="lg"/>
                 <BussCard />
                 <WhiteSpace size="lg"/>
@@ -304,6 +304,7 @@ class Home extends Component {
                 <WhiteSpace size="lg"/>
               </div>
             </div>
+            
           </div>
         </div>
         
