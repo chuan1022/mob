@@ -10,7 +10,6 @@ import DiscItem from '@/components/discoveryItem'
 import SearchCard from '@/components/searchCard'
 
 
-import {findType,finding} from '@/services/discovery';
 import request from 'umi-request';
 import API from '@/services'
 import './index.less';
@@ -59,7 +58,7 @@ class Discovery extends Component {
 
   getFindType(refresh){
    if(this.state.tabs.length && !refresh) return;
-    findType({
+   API.findType({
       type:'find'
     }).then(res=>{
       let tabs=[];

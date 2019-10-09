@@ -8,7 +8,6 @@ import dataList from './dadta';
 import DiscItem from '@/components/discoveryItem'
 import { Sticky,Tabs, PullToRefresh } from 'antd-mobile';
 
-import {findType,finding} from '@/services/discovery';
 import request from 'umi-request';
 import API from '@/services'
 import './index.less';
@@ -57,7 +56,7 @@ class Discovery extends Component {
 
   getFindType(refresh){
    if(this.state.tabs.length && !refresh) return;
-    findType({
+   API.findType({
       type:'find'
     }).then(res=>{
       let tabs=[];
