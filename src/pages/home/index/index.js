@@ -292,15 +292,17 @@ class Home extends Component {
                 <WhiteSpace size="lg"/>
               </div>
               <div className="recommend-content">
-                <BussCard size={104} type="home"/>
+                <BussCard size={104} type="type1"/>
                 <WhiteSpace size="lg"/>
-                <BussCard />
+                <BussCard type="type3"/>
                 <WhiteSpace size="lg"/>
-                <BussCard />
+                <BussCard size={104} type="type1"/>
                 <WhiteSpace size="lg"/>
-                <BussCard />
+                <BussCard type="type3"/>
                 <WhiteSpace size="lg"/>
-                <BussCard />
+                <BussCard size={104} type="type1"/>
+                <WhiteSpace size="lg"/>
+                <BussCard type="type3"/>
                 <WhiteSpace size="lg"/>
               </div>
             </div>
