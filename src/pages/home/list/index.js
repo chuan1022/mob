@@ -3,10 +3,12 @@ import React, { Component } from 'react';
 import dva, {connect} from 'dva';
 import Link from 'umi/link';
 
+import { Sticky,Tabs, PullToRefresh,WhiteSpace } from 'antd-mobile';
 import Masonry from 'react-masonry-component';
 import dataList from './dadta';
 import DiscItem from '@/components/discoveryItem'
-import { Sticky,Tabs, PullToRefresh } from 'antd-mobile';
+import SearchCard from '@/components/searchCard'
+
 
 import {findType,finding} from '@/services/discovery';
 import request from 'umi-request';
@@ -121,61 +123,39 @@ class Discovery extends Component {
 
   render() {
     return (
-      <div className="page-discovery page-bg" id="page-discovery">
-        <div className="bg-color-theme">
-          
-        </div>
-        <div className="discovery-tab vr-tabs">
-          <Tabs
-            tabBarBackgroundColor='#fff'
-            tabBarTextStyle={{
-              'fontSize': '15px',
-              'color': '#333'
-            }}
-            tabBarUnderlineStyle={{
-              'border': '1px solid #ED6C2D',
-              'width': '20px',
-              'display': 'none'
-            }}
-            tabs={this.state.tabs}
-            renderTabBar={props => <Tabs.DefaultTabBar {...props} page={5} />}
-            onTabClick={(tab,index)=>this.handelTabClick(tab,index)}
+      <div className="page-list page-bg" id="page-list">
+        <div className="bg-color-theme padding-left-15 padding-right-15 border-box top-wrapper padding-bottom-5">
+          <WhiteSpace/>
+          <SearchCard 
+            showAddress={false}
+            showService={false}
           >
-          </Tabs>
-        </div>
-        <div >
-          <PullToRefresh
-            onRefresh={this.handleOnFresh}
-            refreshing={this.state.refreshing}
-            className='discovery-items-wrapper'
-            style={{
-              overflow: 'auto',
-            }}
-          >
-            <Masonry
-              elementType={'ul'}
-              options={masonryOptions}
-              disableImagesLoaded={false}
-              updateOnEachImageLoad={false}
-              ref={function (c) { this.masonry = this.masonry || c.masonry; }.bind(this)}
+            </SearchCard>
+          <WhiteSpace size="lg"/>
+          <div className="list-tab vr-tabs position-relative">
+            <Tabs
+              tabBarBackgroundColor='#ED6C2D'
+              tabBarTextStyle={{
+                'fontSize': '15px',
+                'color': '#fff',
+                width:'auto'
+              }}
+              tabBarUnderlineStyle={{
+                'border': '1px solid #ED6C2D',
+                'width': '20px',
+                'display': 'none'
+              }}
+              tabs={this.state.tabs}
+              renderTabBar={props => <Tabs.DefaultTabBar {...props} page={5} />}
+              onTabClick={(tab,index)=>this.handelTabClick(tab,index)}
             >
-              {
-                (this.state.dataList ?
-                  this.state.dataList.map(
-                    (item, j) =>
-                      <li
-                        className={`item overflow-hidden ${(j + 1) % 2 ? 'item-odd' : 'item-even'}`}
-                        key={j}>
-                          <Link className="link" to={`/discovery/${item.id}`}>
-                            <DiscItem data={item} type={(j + 1) % 2 ? 'odd' : 'even'} />
-                          </Link>
-                      </li>
-                  ) : null)
-              }
-            </Masonry>
-          </PullToRefresh>
+            </Tabs>
+            <div className="down-button text-color-fff bg-color-theme flex align-items-center justify-content-center">
+              >
+            </div>
+          </div>
         </div>
-
+       
       </div >
     );
   }

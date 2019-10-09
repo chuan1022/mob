@@ -1,19 +1,45 @@
 
 :global{
 @import '../../../styles/theme.less';
-    #page-discovery{
+    #page-list{
+      .top-wrapper{
+        padding-bottom: 5px;
+      }
         .vr-tabs{
+          padding-right: 50px;
+          .down-button{
+            position: absolute;
+            right: -15px;
+            height: 100%;
+            top:0;
+            width: 50px;
+            z-index: 2;
+           &:before{
+            content: '';
+            width: 6px;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: -6px;
+            background:linear-gradient(-86deg,rgba(160,52,0,1) 0%,rgba(160,52,0,0) 100%);
+            opacity: 0.17;
+           }
+          }
+          .am-tabs-default-bar-nextpage,
+          .am-tabs-default-bar-prevpage{
+              display: none;
+          }
             .am-tabs-tab-bar-wrap{
                 position: relative;
               &:after{
-                  content: '';
-                  display: block;
-                 height: 1px;
-                 bottom: 0;
-                 left: 0;
-                 width: 100%;
-                 height: 1px;
-                  background: #ECEBEB;
+                  // content: '';
+                //   display: block;
+                //  height: 1px;
+                //  bottom: 0;
+                //  left: 0;
+                //  width: 100%;
+                //  height: 1px;
+                //   background: #ECEBEB;
               }
               .am-tabs-default-bar-tab{
                   &:after{
@@ -29,43 +55,17 @@
                     font-weight: bold;
                     &:after{
                         width: 20px;
-                        background-color: #ED6C2D;
+                        background-color: #fff;
                     }
                 }
               }   
             }
            }
-      .discovery-tab{
-          position: fixed;
-          top:0;
-          z-index: 2;
-          width: 100%;
-      }
-      .discovery-items-wrapper{
-          margin-top: 60px;
-          height: calc(~"100vh - 60px");
-            .item{
-                margin-bottom: 15px;
-                overflow: hidden;
-                width: 50%;
-                box-sizing: border-box;
-                .item-img{
-                    width:100%;
-                }
-               .link{
-                   color: #333;
-                   display: block;
-               }
-               &.item-odd{
-                 padding-left: 15px;
-                 padding-right: 8px;  
-              }
-              &.item-even{
-                  padding-right: 15px;
-                  padding-left: 8px;
-                  
-              }
-            }
-        }
+      // .discovery-tab{
+      //     position: fixed;
+      //     top:0;
+      //     z-index: 2;
+      //     width: 100%;
+      // }
     }
 }

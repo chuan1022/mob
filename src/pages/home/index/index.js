@@ -10,6 +10,8 @@ import {findType,finding} from '@/services/discovery';
 
 import VrtabBar from '@/components/tabbar'
 import BussCard from '@/components/BussCard'
+import BaiduMap from '@/components/baiduMap'
+import SearchCard from '@/components/searchCard'
 
 import './index.less';
 import '@/styles/mixins.less';
@@ -18,7 +20,7 @@ import defaultImg from './6.jpg';
 import defaultIcon from './food.png';
 import defaultFood from './png1.png';
 
-import BaiduMap from '@/components/baiduMap'
+
 
 import API from '@/services'
 const app = dva();
@@ -122,33 +124,10 @@ class Home extends Component {
         <div className="main-wrapper">
           {/* search */}
           <div className="top-header">
-            <div className="flex align-items-center ">
-              <div
-                style={{
-                  flex:"0 0 75px",
-                  width:'75px'
-                }}
-              className="text-align-center text-color-fff font-size-16">
-                {this.props.global.locationInfo&&this.props.global.locationInfo.city_name}>
-              </div>
-              <div className="flex-1">
-                <input 
-                className="search-input font-size-15"
-                placeholder="搜索店铺或商品"
-                style={{
-                  width:'100%',
-                  display:'block'
-                }}  type="text"/>
-              </div>
-              <div 
-              style={{
-                flex:"0 0 50px",
-                width:'50px'
-              }}
-              className="text-align-center text-color-fff">
-                客服
-              </div>
-            </div>
+            <SearchCard 
+            showAvatar={false}
+            address={this.props.global.locationInfo&&this.props.global.locationInfo.city_name}>
+            </SearchCard>
           </div>
           <div className="banner-bg">
             <div className="top-bg"></div>
