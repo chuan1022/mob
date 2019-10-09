@@ -122,6 +122,9 @@ class Discovery extends Component {
   render() {
     return (
       <div className="page-discovery page-bg" id="page-discovery">
+        <div className="bg-color-theme">
+          
+        </div>
         <div className="discovery-tab vr-tabs">
           <Tabs
             tabBarBackgroundColor='#fff'

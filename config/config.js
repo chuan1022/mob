@@ -12,16 +12,35 @@ export default {
             dll: true
         }],
     ],
-    history: 'hash',
     proxy: {
-        '/find/api': {
-          target: 'http://dev.gateway.360vrsh.com',
-          changeOrigin: true
-        }
+        '/find': {
+          target: 'http://dev.gateway.360vrsh.com/find/api',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/find':''
+          }
+        },
+        '/cmm': {
+          target: 'http://dev.gateway.360vrsh.com/cmm/api',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/cmm':''
+          }
+        },
+        '/scenter': {
+          target: 'http://dev.gateway.360vrsh.com/scenter/api',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/scenter':''
+          }
+        },
     },
     routes: routes,
     alias: {
         '@': path.resolve(__dirname, 'src'),
         'components': path.resolve(__dirname, 'src/components')
+    },
+    externals:{
+      'BMap':'BMap',
     }
 };

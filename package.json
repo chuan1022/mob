@@ -42,6 +42,7 @@
     "react-masonry-component": "^6.2.1",
     "react-motion": "^0.5.2",
     "react-transition-group": "^2.5.0",
+    "store": "^2.0.12",
     "umi-request": "^1.2.6"
   }
 }

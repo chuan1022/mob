@@ -140,7 +140,7 @@ class bussCard extends Component {
                                         padding:'5px'
                                     }}
                                    >
-                                        <div  className={`${styles['foods-img-wrapper']} position-relative`}>
+                                        <div  className={`${styles['foods-img-wrapper']} position-relative text-align-center`}>
                                             <img src={item.imgUrl}/>
                                             <p className={`${styles['foods-cost']} text-color-fff font-size-11 position-absolute`}>￥{item.cost}</p>
                                         </div>

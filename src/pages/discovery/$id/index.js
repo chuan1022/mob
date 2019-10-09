@@ -155,7 +155,7 @@ class Discovery extends Component {
                     <div style={{
                       marginRight:'15px'
                     }}>
-                      <Avatar size={40} />
+                      <Avatar  size={40} />
                     </div>
                     <div className="flex-1 flex align-items-start justify-content-between border-bottom">
                       <div>

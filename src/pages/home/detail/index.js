@@ -84,6 +84,7 @@ class Home extends Component {
   getAttentionList(){
     API.getAttentionList(this.props.global.locationPoint).then(res=>{
       console.log(res);
+      
     })
     let para ={
       type:this.state.activeType,

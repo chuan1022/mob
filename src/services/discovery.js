@@ -1,7 +1,7 @@
-import proxyRequest from '@/utils/request';
+import proxyRequest from './request';
 import { apiBase } from '@/utils/baseServer';
 
-const baseUrl="/find/api"
+const baseUrl="/find"
 export const findType=(params)=> {
   return proxyRequest.get(baseUrl+'/find/type', params)
 };
