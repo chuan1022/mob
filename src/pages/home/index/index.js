@@ -8,10 +8,10 @@ import { Carousel, WhiteSpace,Flex,NoticeBar,Icon,Grid} from 'antd-mobile';
 
 import {findType,finding} from '@/services/discovery';
 
-import VrtabBar from '@/components/tabbar'
-import BussCard from '@/components/bussCard'
-import BaiduMap from '@/components/baiduMap'
-import SearchCard from '@/components/searchCard'
+import VrtabBar from '@/components/tabbar';
+import BussCard from '@/components/bussCard';
+import BaiduMap from '@/components/baiduMap';
+import SearchCard from '@/components/searchCard';
 
 import './index.less';
 import '@/styles/mixins.less';

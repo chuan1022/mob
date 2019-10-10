@@ -3,12 +3,14 @@ import React, { Component } from 'react';
 import dva, {connect} from 'dva';
 import Link from 'umi/link';
 
-import { Sticky,Tabs, PullToRefresh,WhiteSpace ,Drawer} from 'antd-mobile';
+import { Tabs,WhiteSpace ,Carousel,Accordion,List } from 'antd-mobile';
 import Masonry from 'react-masonry-component';
 import dataList from './dadta';
-import DiscItem from '@/components/discoveryItem'
-import SearchCard from '@/components/searchCard'
-import defaultImg from './6.jpg';
+import DiscItem from '@/components/discoveryItem';
+import SearchCard from '@/components/searchCard';
+import BussCard from '@/components/bussCard';
+
+import defaultImg from './无商品.png';
 
 
 import request from 'umi-request';
@@ -23,11 +25,11 @@ const masonryOptions = {
   gutter: 0
 }
 
-@connect(({ count }) => ({
-  count
+@connect(({ global }) => ({
+  global
 }))
 
-class BussList extends Component {
+class BussListPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,57 +37,16 @@ class BussList extends Component {
       dataList: [],
       handleOnFresh: false,
       activeType:0,
-      open:true,
+      open:false,
       activeFirList:0,
       activeSecList:0,
-      navData:[
-        {
-          lable:'美食1',
-          number:100,
-          children:[{
-            lable:'美食1-1',
-            number:10,
-            imgUrl:defaultImg
-          },{
-            lable:'美食1-1',
-            number:10,
-            imgUrl:defaultImg
-            
-          },{
-            lable:'美食1-1',
-            number:10,
-            imgUrl:defaultImg
-          },{
-            lable:'美食1-1',
-            number:10,
-            imgUrl:defaultImg
-          }]
-        },{
-          lable:'美食2',
-          number:100,
-          children:[{
-            lable:'美食2-1',
-            number:10,
-            imgUrl:defaultImg
-          },{
-            lable:'美食2-1',
-            number:10,
-            imgUrl:defaultImg
-          },{
-            lable:'美食2-1',
-            number:10,
-            imgUrl:defaultImg
-          },{
-            lable:'美食2-1',
-            number:10,
-            imgUrl:defaultImg
-          },{
-            lable:'美食2-1',
-            number:10,
-            imgUrl:defaultImg
-          }]
-        }
-      ]
+      navData:[],
+      firClassId:0,
+      secClassId:0,
+      page:1,
+      pageSize:10,  
+      storeList:[],  //店铺列表
+      bannerList:[defaultImg,defaultImg,defaultImg ]
     }
     this.handelTabClick = this.handelTabClick.bind(this);
     this.handleFirNavClick = this.handleFirNavClick.bind(this);
@@ -99,7 +60,7 @@ class BussList extends Component {
   componentDidUpdate(prevProps,prevState){
     
   }
-  getRecList(data){
+  getTabscList(data){
     let tabs=[];
     data.forEach(el => {
       tabs.push({
@@ -119,7 +80,7 @@ class BussList extends Component {
     }
     API.getStoreClassList(params).then(res=>{
       console.log(res);
-      this.getRecList(res.recommend)
+      this.getTabscList(res.recommend)
       this.setState({
         navData:res.list
       });
@@ -129,6 +90,9 @@ class BussList extends Component {
     this.setState({
       activeType:tab.type
     })
+  }
+  handleChangeClassID(val){
+    
   }
 
   handleOnFresh() {
@@ -147,59 +111,85 @@ class BussList extends Component {
       activeFirList:index
     })
   }
-  handleSecNavClick(index){
-    console.log(index);
-    
+  handleSecNavClick(firIndex,secIndex,firId,secId){
+    //切换分类
     this.setState({
-      activeSecList:index
+      activeSecList:secIndex,
+      firClassId:firId,
+      secClassId:secId
     })
+    this.getTabscList(this.state.navData[firIndex].children);
+    this.getStoreList(secId);
+  }
+  getStoreList(id){
+    
+    let params={
+      lng:this.props.global.locationInfo.lng,
+      lat:this.props.global.locationInfo.lat,
+      class_id:id,
+      // keyword:'',
+      // sort_by:'complex',// 排序方式:complex=综合排序,praise=好评优先,high_per_capita=人均最高,low_per_capita=人均最低,nearby=离我最近,sales_volume=销量
+      // page:this.state.curPage,
+      // pageSize:this.state.pageSize,
+      // new_store:false,
+      // is_delivery:false,
+      // is_self_get:false
+    }
+
+    API.getStoreList(params).then(res=>{
+      console.log(res);
+      this.setState({
+        storeList:res
+      })
+    })
+
   }
   render() {
     return (
       <div className="page-list page-bg positon-relative" id="page-list">
 
-        {/* 顶部 */}
-        <div className="border-box top-wrapper padding-bottom-5">
-          <div className="bg-color-theme padding-left-15 padding-right-15 ">
-          <WhiteSpace/>
-          <SearchCard 
-            showAddress={false}
-            showService={false}
-          >
-            </SearchCard>
-          <WhiteSpace size="lg"/>
-          {/* tab */}
-          <div className="list-tab vr-tabs position-relative">
-            <Tabs
-              tabBarBackgroundColor='#ED6C2D'
-              tabBarTextStyle={{
-                'fontSize': '15px',
-                'color': '#fff',
-                width:'auto'
-              }}
-              tabBarUnderlineStyle={{
-                'border': '1px solid #ED6C2D',
-                'width': '20px',
-                'display': 'none'
-              }}
-              tabs={this.state.tabs}
-              renderTabBar={props => <Tabs.DefaultTabBar {...props} page={5} />}
-              onTabClick={(tab,index)=>this.handelTabClick(tab,index)}
+        {/* 顶部导航 */}
+        <div className="border-box top-wrapper ">
+          {/* 顶部 */}
+          <div style={{
+            zIndex:2
+          }} className="position-relative bg-color-theme padding-row-15 ">
+            <WhiteSpace/>
+            <SearchCard 
+              showAddress={false}
+              showService={false}
             >
-            </Tabs>
-           
-            <div 
-            onClick={this.onOpenChange}
-            className="down-button text-color-fff bg-color-theme flex align-items-center justify-content-center">
+              </SearchCard>
+            <WhiteSpace size="lg"/>
+            {/* tab */}
+            <div className="list-tab vr-tabs position-relative ">
+              <Tabs
+                tabBarBackgroundColor='#ED6C2D'
+                tabBarTextStyle={{
+                  'fontSize': '15px',
+                  'color': '#fff'
+                }}
+                tabBarUnderlineStyle={{
+                  'display': 'none'
+                }}
+                tabs={this.state.tabs}
+                renderTabBar={props => <Tabs.DefaultTabBar {...props} 
+                page={4} />}
+                onTabClick={(tab,index)=>this.handelTabClick(tab,index)}
               >
+              </Tabs>
+            
+              <div 
+              onClick={this.onOpenChange}
+              className="down-button text-color-fff bg-color-theme flex align-items-center justify-content-center">
+                >
+              </div>
             </div>
-          </div>
           
           </div>
          {/* 下拉nav */}
-         {
-          this.state.open? 
-            <div className="downpanal-nav bg-color-white flex">
+         
+            <div className={`downpanal-nav bg-color-white flex position-relative ${this.state.open?'open':''}`}>
               <div
               style={{
                 flex:'0 0 130px'
@@ -225,8 +215,9 @@ class BussList extends Component {
                         {
                           el.children.map((e,i)=>
                           <li
-                          onClick={this.handleSecNavClick.bind(this,i)}
-                          key={i} className={`${this.state.activeSecList===i?'active':''}  item flex align-items-center justify-content-between`}>
+                          onClick={this.handleSecNavClick.bind(this,index,i,el.id,e.id)}
+                          key={e.id} 
+                          className={`${this.state.firClassId===el.id&& this.state.secClassId===e.id?'active':''}  item flex align-items-center justify-content-between`}>
                             <div className="flex align-items-center">
                               <img width="44" height="32" src={e.icon||defaultImg} alt=""/>
                               <span className="margin-left-10 lable text-color-666 font-size-15">{e.name}</span>
@@ -240,21 +231,110 @@ class BussList extends Component {
                 </div>
               </div>
             </div>
-            :null
-         }
-         
         </div>
-        
+                
+        {/* 轮播图 */}
+        <div className="padding-row-15 margin-top-15 margin-bottom-15">
+        <Carousel
+          autoplay={true}
+          infinite
+          dots={false}
+          cellSpacing={15}
+          >
+            {this.state.bannerList.map((val,index) => (
+              <a
+                key={index}
+                href="/"
+                style={{ 
+                  display: 'inline-block', 
+                  width: '100%', 
+                  height: '150px',
+                  overflow:'hidden',
+                  borderRadius:'6px'
+                  }}
+              >
+                <img
+                  src={val}
+                  alt="bannerimg"
+                  style={{ width: '100%', height: '150px' }}
+                  // onLoad={() => {
+                  //   // fire window resize event to change height
+                  //   window.dispatchEvent(new Event('resize'));
+                  //   this.setState({ imgHeight: 'auto' });
+                  // }}
+                />
+              </a>
+            ))}
+          </Carousel>
+        </div>
+        {/* 筛选 */}
+        <div 
+        className="flex justify-content-between 
+        bg-color-white line-height-l padding-column-10 pick-wrapper">
+          <div className="">
+            <p className="inline-block">     
+              <Accordion defaultActiveKey="0" className="my-accordion" >
+                <Accordion.Panel
+                 header={
+                 <span className="font-size-15 font-blod">综合排序</span> 
+                }>
+                  <List className="my-list">
+                    <List.Item>综合排序</List.Item>
+                    <List.Item>好评优先</List.Item>
+                    <List.Item>人均最高</List.Item>
+                    <List.Item>人均最低</List.Item>
+                    <List.Item>离我最近</List.Item>
+                    <List.Item>销量</List.Item>
+                  </List>
+                </Accordion.Panel>
+              </Accordion>
+            </p>
+            <p className="inline-block">距离</p>
+            <p className="inline-block">销量</p>
+          </div>
+          <p>
+            <Accordion defaultActiveKey="0" className="my-accordion" >
+             <Accordion.Panel
+              header={
+              <span className="font-size-15 font-blod">筛选</span> 
+            }>
+              <List className="my-list">
+                <List.Item>综合排序</List.Item>
+                <List.Item>好评优先</List.Item>
+              </List>
+              </Accordion.Panel>
+            </Accordion>
+          </p>
+        </div>
+
+
+        {/* 列表 */}
+        <div className="store-list-wrapper padding-row-15">
+          <BussCard size={104} type="type1"/>
+          <WhiteSpace />
+          <BussCard size={104} type="type1"/>
+          <WhiteSpace />
+          <BussCard size={104} type="type1"/>
+          <WhiteSpace />
+          <BussCard size={104} type="type1"/>
+          <WhiteSpace />
+          <BussCard size={104} type="type1"/>
+          <WhiteSpace />
+          <BussCard size={104} type="type1"/>
+          <WhiteSpace />
+        </div>
         {/* mask */}
         {
-          this.state.open ? <div className="menu-mask" onClick={this.onOpenChange} /> : null
+          this.state.open ? 
+          <div className={`menu-mask ${this.state.open}`} onClick={this.onOpenChange}>
+          </div>:null
         }
-       
+
 
       </div >
     );
   }
 }
-export default BussList;
+export default BussListPage;
 
 // export default Discovery;

@@ -10,21 +10,25 @@
             .am-tabs-tab-bar-wrap{
                 position: relative;
               &:after{
-                  content: '';
-                  display: block;
+                content: '';
+                display: block;
                  height: 1px;
                  bottom: 0;
                  left: 0;
                  width: 100%;
                  height: 1px;
-                  background: #ECEBEB;
+                 background: #ECEBEB;
               }
               .am-tabs-default-bar-tab{
+                position: relative;
                   &:after{
+                      content: '';
                       height: 2px;
                       background-color: #fff;
                       width: 0;
                       left: 50%;
+                      bottom: 0;
+                      position: absolute;
                       transform: translateX(-50%);
                       transition: all .3s ease-in-out;
                       transform-origin: center;

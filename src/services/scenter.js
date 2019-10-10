@@ -18,5 +18,9 @@ API.getStoreClassList=(params)=> {
   return proxyRequest.get(baseUrl+'/store/class/list', params)
 };
 
+//商家列表
+API.getStoreList=(params)=>{
+  return proxyRequest.get(baseUrl+'/foodie/search', params)
+}
 
 export default API;

@@ -6,14 +6,17 @@ const ERR_CODE =0;
 export default  {
   namespace: 'global',
   state: {
-    address:"北京",
+    address:"郑州市",
     isLogiin:false,
     coordinate:{
       lon:0,
       lat:0
     },
-    addressID:0,
-    locationInfo:null,
+    addressID:2656,
+    locationInfo:{
+      lng:113.64964385,
+      lat:34.75661006
+    },
     locationPoint:null
   },
   reducers: {
