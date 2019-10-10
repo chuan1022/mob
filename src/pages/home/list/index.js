@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import dva, {connect} from 'dva';
 import Link from 'umi/link';
 
-import { Tabs,WhiteSpace ,Carousel,Accordion,List } from 'antd-mobile';
+import { Tabs,WhiteSpace ,Carousel,Accordion,List,Switch  } from 'antd-mobile';
 import Masonry from 'react-masonry-component';
 import dataList from './dadta';
 import DiscItem from '@/components/discoveryItem';
@@ -44,7 +44,21 @@ class BussListPage extends Component {
       firClassId:0,
       secClassId:0,
       page:1,
-      pageSize:10,  
+      pageSize:10,
+      checked1:1,
+      checked2:0,
+      params:{
+        page:1,
+        pageSize:10,
+        class_id:0,
+        lng:this.props.global.locationInfo.lng,
+        lat:this.props.global.locationInfo.lat,
+        // keyword:'',
+        sort_by:'complex',// 排序方式:complex=综合排序,praise=好评优先,high_per_capita=人均最高,low_per_capita=人均最低,nearby=离我最近,sales_volume=销量
+        new_store:false,
+        is_delivery:false,
+        // is_self_get:false
+      }, 
       storeList:[],  //店铺列表
       bannerList:[defaultImg,defaultImg,defaultImg ]
     }
@@ -119,24 +133,21 @@ class BussListPage extends Component {
       secClassId:secId
     })
     this.getTabscList(this.state.navData[firIndex].children);
-    this.getStoreList(secId);
+    this.setStoreListParams({
+      id:secId
+    });
   }
-  getStoreList(id){
-    
-    let params={
-      lng:this.props.global.locationInfo.lng,
-      lat:this.props.global.locationInfo.lat,
-      class_id:id,
-      // keyword:'',
-      // sort_by:'complex',// 排序方式:complex=综合排序,praise=好评优先,high_per_capita=人均最高,low_per_capita=人均最低,nearby=离我最近,sales_volume=销量
-      // page:this.state.curPage,
-      // pageSize:this.state.pageSize,
-      // new_store:false,
-      // is_delivery:false,
-      // is_self_get:false
-    }
+  setStoreListParams(options,getdata=true){
+    let params = Object.assign(this.state.params,options)
+    this.setState({
+      params:params
+    })
 
-    API.getStoreList(params).then(res=>{
+    if(getdata) this.getStoreList();
+  }
+  getStoreList(){
+
+    API.getStoreList(this.state.params).then(res=>{
       console.log(res);
       this.setState({
         storeList:res
@@ -212,20 +223,20 @@ class BussListPage extends Component {
                   {this.state.navData.map((el,index)=>
                   this.state.activeFirList===index && 
                   <ul className="secList" key={index}>
-                        {
-                          el.children.map((e,i)=>
-                          <li
-                          onClick={this.handleSecNavClick.bind(this,index,i,el.id,e.id)}
-                          key={e.id} 
-                          className={`${this.state.firClassId===el.id&& this.state.secClassId===e.id?'active':''}  item flex align-items-center justify-content-between`}>
-                            <div className="flex align-items-center">
-                              <img width="44" height="32" src={e.icon||defaultImg} alt=""/>
-                              <span className="margin-left-10 lable text-color-666 font-size-15">{e.name}</span>
-                            </div>
-                            <span className="number font-size-11 text-color-999">{e.num}</span>
-                          </li>)
-                        }
-                    </ul>
+                    {
+                      el.children.map((e,i)=>
+                      <li
+                      onClick={this.handleSecNavClick.bind(this,index,i,el.id,e.id)}
+                      key={e.id} 
+                      className={`${this.state.firClassId===el.id&& this.state.secClassId===e.id?'active':''}  item flex align-items-center justify-content-between`}>
+                        <div className="flex align-items-center">
+                          <img width="44" height="32" src={e.icon||defaultImg} alt=""/>
+                          <span className="margin-left-10 lable text-color-666 font-size-15">{e.name}</span>
+                        </div>
+                        <span className="number font-size-11 text-color-999">{e.num}</span>
+                      </li>)
+                    }
+                  </ul>
                     )
                   }
                 </div>
@@ -234,7 +245,7 @@ class BussListPage extends Component {
         </div>
                 
         {/* 轮播图 */}
-        <div className="padding-row-15 margin-top-15 margin-bottom-15">
+        <div className="padding-row-15 padding-column-15 bg-color-white">
         <Carousel
           autoplay={true}
           infinite
@@ -267,44 +278,84 @@ class BussListPage extends Component {
             ))}
           </Carousel>
         </div>
-        {/* 筛选 */}
-        <div 
+        
+
+    {/* 筛选 */}
+    <div 
         className="flex justify-content-between 
-        bg-color-white line-height-l padding-column-10 pick-wrapper">
-          <div className="">
-            <p className="inline-block">     
-              <Accordion defaultActiveKey="0" className="my-accordion" >
+        bg-color-white line-height-l  pick-wrapper position-relative margin-bottom-15" >
+              <Accordion accordion={true} defaultActiveKey="" className="my-accordion" >
                 <Accordion.Panel
-                 header={
-                 <span className="font-size-15 font-blod">综合排序</span> 
+                header={
+                <span className="font-size-15 font-blod text-color-666">综合排序</span> 
                 }>
                   <List className="my-list">
-                    <List.Item>综合排序</List.Item>
-                    <List.Item>好评优先</List.Item>
-                    <List.Item>人均最高</List.Item>
-                    <List.Item>人均最低</List.Item>
-                    <List.Item>离我最近</List.Item>
-                    <List.Item>销量</List.Item>
+                    <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'complex'})}>
+                      <span className="text-color-666 font-size-15" >综合排序</span>
+                    </List.Item>
+
+                    <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'praise'})}>
+                      <span  className="text-color-666 font-size-15">评分优先</span>
+                    </List.Item>
+
+                    <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'high_per_capita'})}>
+                      <span  className="text-color-666 font-size-15">人均最高</span>
+                    </List.Item>
+
+                    <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'low_per_capita'})}>
+                      <span  className="text-color-666 font-size-15">人均最低</span>
+                    </List.Item>
+
                   </List>
                 </Accordion.Panel>
+                <p 
+                  onClick={this.setStoreListParams.bind(this,{sort_by:'nearby'})}
+                  className={`${'active'} item font-size-15 text-color-666`}>距离</p>
+                  <p 
+                  onClick={this.setStoreListParams.bind(this,{sort_by:'sales_volume'})}
+                  className={`${'active'} item font-size-15 text-color-666`}>销量</p>
+                <Accordion.Panel
+                  header={
+                  <span className="font-size-15 text-color-666">筛选</span> 
+                }>
+                  <List className="my-list">
+                    <List.Item 
+                      className="text-color-666 font-size-15"
+                      extra={<Switch
+                      checked={this.state.checked1}
+                      color='#ED6C2D'
+                      onChange={() => {
+                          this.setState({
+                            checked1: !this.state.checked1,
+                          });
+                          this.setStoreListParams({
+                            new_store:!this.state.checked1
+                          })
+                        }}
+                      />}>
+                      <span className="text-color-666 font-size-15">新店开业</span>
+                    </List.Item>
+                    <List.Item 
+                      className="text-color-666 font-size-15"
+                      extra={<Switch
+                      checked={this.state.checked2}
+                      color='#ED6C2D'
+                      onChange={() => {
+                          this.setState({
+                            checked2: !this.state.checked2,
+                          });
+                          this.setStoreListParams({
+                            is_delivery:!this.state.checked2
+                          })
+                        }}
+                      />}>
+                      <span  className="text-color-666 font-size-15">可配送</span>
+                    </List.Item>
+                  </List>
+                  </Accordion.Panel>
+              
               </Accordion>
-            </p>
-            <p className="inline-block">距离</p>
-            <p className="inline-block">销量</p>
-          </div>
-          <p>
-            <Accordion defaultActiveKey="0" className="my-accordion" >
-             <Accordion.Panel
-              header={
-              <span className="font-size-15 font-blod">筛选</span> 
-            }>
-              <List className="my-list">
-                <List.Item>综合排序</List.Item>
-                <List.Item>好评优先</List.Item>
-              </List>
-              </Accordion.Panel>
-            </Accordion>
-          </p>
+            
         </div>
 
 

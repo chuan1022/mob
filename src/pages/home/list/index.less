@@ -9,7 +9,7 @@
         top: 0;
         left: 0;
         right: 0;
-
+        height: 108px;
 
       }
       .menu-mask {
@@ -169,13 +169,43 @@
         }
       }
       .pick-wrapper{
-       .my-accordion{
-            position: relative;
-       } 
+        position: sticky;
+        top:107px;
+        .am-accordion{
+          position: unset;
+        }
+        .my-accordion{
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          .item{
+            margin: 0 25px;
+          }
+          &:before{
+            content: none;
+          }
+          .am-accordion-header{
+            &:after{
+              content: none;
+            }
+          }
+         } 
+      //  .my-accordion{
+      //   &:before{
+      //     content: none;
+      //   }
+      //   .am-accordion-header{
+      //     &:after{
+      //       content: none;
+      //     }
+      //   }
+      //  } 
        .am-accordion-content{
          position: absolute;
          top: 100%;
          width: 100vw;
+         left: 0;
        }
        .my-list{
 
