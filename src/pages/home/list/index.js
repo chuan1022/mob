@@ -3,16 +3,13 @@ import React, { Component } from 'react';
 import dva, {connect} from 'dva';
 import Link from 'umi/link';
 
-import { Tabs,WhiteSpace ,Carousel,Accordion,List,Switch  } from 'antd-mobile';
+import { Tabs,WhiteSpace ,Carousel,Accordion,List,Switch,Icon } from 'antd-mobile';
 import Masonry from 'react-masonry-component';
-import dataList from './dadta';
 import DiscItem from '@/components/discoveryItem';
 import SearchCard from '@/components/searchCard';
 import BussCard from '@/components/bussCard';
 
 import defaultImg from './无商品.png';
-
-
 import request from 'umi-request';
 import API from '@/services'
 import './index.less';
@@ -34,7 +31,7 @@ class BussListPage extends Component {
     super(props);
     this.state = {
       tabs: [],
-      dataList: [],
+      storeList: [],
       handleOnFresh: false,
       activeType:0,
       open:false,
@@ -45,18 +42,20 @@ class BussListPage extends Component {
       secClassId:0,
       page:1,
       pageSize:10,
-      checked1:1,
-      checked2:0,
+      newStoreChecked:0,
+      deliveryChecked:0,
+      activePanel:'',
+      showMask:false,
       params:{
+        class_id:0,
         page:1,
         pageSize:10,
-        class_id:0,
         lng:this.props.global.locationInfo.lng,
         lat:this.props.global.locationInfo.lat,
         // keyword:'',
         sort_by:'complex',// 排序方式:complex=综合排序,praise=好评优先,high_per_capita=人均最高,low_per_capita=人均最低,nearby=离我最近,sales_volume=销量
-        new_store:false,
-        is_delivery:false,
+        new_store:0,  
+        is_delivery:0,
         // is_self_get:false
       }, 
       storeList:[],  //店铺列表
@@ -74,6 +73,25 @@ class BussListPage extends Component {
   componentDidUpdate(prevProps,prevState){
     
   }
+  toggleMask(el){
+    console.log(el);
+    
+    this.setState({
+      showMask:!this.state.showMask
+    })
+  }
+  showMask(){
+    this.setState({
+      showMask:true
+    })
+  }
+  hideMask(){
+    this.setState({
+      showMask:false,
+      open:false
+    })
+
+  }
   getTabscList(data){
     let tabs=[];
     data.forEach(el => {
@@ -88,21 +106,31 @@ class BussListPage extends Component {
     })
   }
   getStoreClassList(){
+
     let params={
       type:'food',
-      area_id:20
+      area_id:this.props.global.addressID
     }
+
     API.getStoreClassList(params).then(res=>{
       console.log(res);
       this.getTabscList(res.recommend)
       this.setState({
-        navData:res.list
+        navData:res.list,
+        // secId:res.recommend[0].id
       });
+      this.setStoreListParams({
+        class_id:res.recommend[0].id
+      })
     })
   }
   handelTabClick(tab,index){
     this.setState({
-      activeType:tab.type
+      secClassId:tab.id
+    })
+    console.log(tab)
+    this.setStoreListParams({
+      class_id:tab.id
     })
   }
   handleChangeClassID(val){
@@ -116,8 +144,15 @@ class BussListPage extends Component {
     }, 1000);
   }
   onOpenChange = (...args) => {
-    console.log(args);
     this.setState({ open: !this.state.open });
+    this.toggleMask();
+  }
+  handleCheckChange=(e)=>{
+    if(e===undefined){
+      this.hideMask();
+    }else{
+      this.showMask();
+    }
   }
   handleFirNavClick(index){
     console.log(index);
@@ -132,10 +167,17 @@ class BussListPage extends Component {
       firClassId:firId,
       secClassId:secId
     })
+    //切换显示的二级分类
     this.getTabscList(this.state.navData[firIndex].children);
+    //更新params,并请求新数据
     this.setStoreListParams({
-      id:secId
+      class_id:secId
     });
+    //关闭
+    this.setState({
+      open:false,
+      showMask:false
+    })
   }
   setStoreListParams(options,getdata=true){
     let params = Object.assign(this.state.params,options)
@@ -145,8 +187,29 @@ class BussListPage extends Component {
 
     if(getdata) this.getStoreList();
   }
-  getStoreList(){
+  handleCheckSureClick(){
+    this.setStoreListParams({
+      new_store:this.state.newStoreChecked,
+      is_delivery:this.state.deliveryChecked
+    })
+  }
+  handleCheckCancleClick(){
+    this.setState({
+      newStoreChecked:0,
+      deliveryChecked:0,
+      activePanel:''
+    },()=>{
+      this.setStoreListParams({
+        new_store:this.state.newStoreChecked,
+        is_delivery:this.state.deliveryChecked
+      })
+    })
 
+ 
+  }
+  getStoreList(){
+    console.log(this.state.params);
+    
     API.getStoreList(this.state.params).then(res=>{
       console.log(res);
       this.setState({
@@ -184,8 +247,12 @@ class BussListPage extends Component {
                   'display': 'none'
                 }}
                 tabs={this.state.tabs}
-                renderTabBar={props => <Tabs.DefaultTabBar {...props} 
-                page={4} />}
+                renderTabBar={props => 
+                <Tabs.DefaultTabBar {...props
+                } 
+                renderTab={tab=>
+                  <div className={`${this.state.secClassId===tab.id?'active':''} tab-item`}>{tab.title}</div>
+                } />}
                 onTabClick={(tab,index)=>this.handelTabClick(tab,index)}
               >
               </Tabs>
@@ -193,7 +260,7 @@ class BussListPage extends Component {
               <div 
               onClick={this.onOpenChange}
               className="down-button text-color-fff bg-color-theme flex align-items-center justify-content-center">
-                >
+                <Icon className={`${this.state.open?'open':''} down-icon`} type="down" />
               </div>
             </div>
           
@@ -284,10 +351,15 @@ class BussListPage extends Component {
     <div 
         className="flex justify-content-between 
         bg-color-white line-height-l  pick-wrapper position-relative margin-bottom-15" >
-              <Accordion accordion={true} defaultActiveKey="" className="my-accordion" >
+              <Accordion 
+              onChange={this.handleCheckChange}
+              accordion={true} 
+              defaultActiveKey={this.state.activePanel} 
+              className="my-accordion" >
                 <Accordion.Panel
+                
                 header={
-                <span className="font-size-15 font-blod text-color-666">综合排序</span> 
+                <span  className="font-size-15 font-blod text-color-666">综合排序</span> 
                 }>
                   <List className="my-list">
                     <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'complex'})}>
@@ -317,20 +389,22 @@ class BussListPage extends Component {
                 <Accordion.Panel
                   header={
                   <span className="font-size-15 text-color-666">筛选</span> 
-                }>
+                  }>
                   <List className="my-list">
                     <List.Item 
                       className="text-color-666 font-size-15"
                       extra={<Switch
-                      checked={this.state.checked1}
+                      checked={this.state.newStoreChecked}
                       color='#ED6C2D'
                       onChange={() => {
+
                           this.setState({
-                            checked1: !this.state.checked1,
+                            newStoreChecked: !this.state.newStoreChecked?1:0,
+                          },()=>{
+                            this.setStoreListParams({
+                              new_store:this.state.newStoreChecked
+                            },false)
                           });
-                          this.setStoreListParams({
-                            new_store:!this.state.checked1
-                          })
                         }}
                       />}>
                       <span className="text-color-666 font-size-15">新店开业</span>
@@ -338,21 +412,30 @@ class BussListPage extends Component {
                     <List.Item 
                       className="text-color-666 font-size-15"
                       extra={<Switch
-                      checked={this.state.checked2}
+                      checked={this.state.deliveryChecked}
                       color='#ED6C2D'
                       onChange={() => {
                           this.setState({
-                            checked2: !this.state.checked2,
+                            deliveryChecked: !this.state.deliveryChecked?1:0,
+                          },()=>{
+                            this.setStoreListParams({
+                              is_delivery:this.state.deliveryChecked
+                            },false)
                           });
-                          this.setStoreListParams({
-                            is_delivery:!this.state.checked2
-                          })
                         }}
                       />}>
                       <span  className="text-color-666 font-size-15">可配送</span>
                     </List.Item>
                   </List>
-                  </Accordion.Panel>
+                  <div className="panel-btns flex text-align-center">
+                    <div 
+                    onClick={this.handleCheckCancleClick.bind(this)} 
+                    className="flex-1 panel-btn default">清空</div>
+                    <div
+                    onClick={this.handleCheckSureClick.bind(this)}
+                    className="flex-1 panel-btn theme">确定</div>
+                  </div>
+                </Accordion.Panel>
               
               </Accordion>
             
@@ -361,23 +444,45 @@ class BussListPage extends Component {
 
         {/* 列表 */}
         <div className="store-list-wrapper padding-row-15">
-          <BussCard size={104} type="type1"/>
-          <WhiteSpace />
-          <BussCard size={104} type="type1"/>
-          <WhiteSpace />
-          <BussCard size={104} type="type1"/>
-          <WhiteSpace />
-          <BussCard size={104} type="type1"/>
-          <WhiteSpace />
-          <BussCard size={104} type="type1"/>
-          <WhiteSpace />
-          <BussCard size={104} type="type1"/>
-          <WhiteSpace />
+          {
+            this.state.storeList.map((item,index)=>(
+
+
+        //       size:75,
+//         distance: "911m"
+// evaluation: "0.0"
+// id: 1
+// image: ""
+// is_delivery: 1
+// is_rest: 0
+// is_self_get: 1
+// per_capita: "6.80"
+// sales: 0
+// title: "迪摩信息有限公司"
+        // avatarUrl:defaultImg,
+        // name: '杭州小笼包黄焖鸡米饭',
+        // stars: 4,
+        // cost: 66,
+        // address: '郑东新区东建材',
+        // love_number:100,
+        // distance:500,
+        // tag:['支持配送','到店自取','免费配料','急速配送'],
+              <BussCard 
+              name={item.title}
+              stars={item.evaluation}
+              distance={item.distance}
+              avatarUrl={item.image}
+              cost={item.per_capita}
+              rest={item.is_rest}
+              delivery={item.is_delivery}
+              selfGet={item.is_self_get}
+              size={104} type="type1"/>
+            ))}
         </div>
         {/* mask */}
         {
-          this.state.open ? 
-          <div className={`menu-mask ${this.state.open}`} onClick={this.onOpenChange}>
+          this.state.showMask ? 
+          <div className={`menu-mask ${this.state.open}`} onClick={this.hideMask.bind(this)}>
           </div>:null
         }
 

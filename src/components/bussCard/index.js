@@ -21,6 +21,8 @@ class bussCard extends Component {
         love_number:100,
         distance:500,
         tag:['支持配送','到店自取','免费配料','急速配送'],
+        delivery:false,
+        selfGet:false,
         type:'type2',
         foodsImgList:[{
             imgUrl:defaultImg,
@@ -77,7 +79,7 @@ class bussCard extends Component {
                             
                             {
                                 (this.props.type==='type1'|| this.props.type==='type3')&&
-                                <span>{this.props.distance}m</span>
+                                <span>{this.props.distance}</span>
                             }
                            
                         </p>
@@ -97,8 +99,8 @@ class bussCard extends Component {
                         {
                            (this.props.type==='type1'|| this.props.type==='type3')&&
                             <p className={styles['tags']}>
-                            <span className={styles['tag']}>支持配送</span>
-                            <span className={styles['tag']}>支持配送</span>
+                              {this.props.delivery?<span className={styles['tag']}>支持配送</span>:null}
+                              {this.props.selfGet?<span className={styles['tag']}>支持自取</span>:null}
                             </p>
                         }
                     </div>
