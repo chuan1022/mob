@@ -11,5 +11,10 @@ API.getCityId=(params)=> {
   return proxyRequest.get(baseUrl+'/geocoder/translate', params)
 };
 
+// 获取热门搜索
+API.getHotSearch=(params)=> {
+  return proxyRequest.get(baseUrl+'/search/hot', params)
+};
+
 export default API;
 

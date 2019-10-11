@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import dva, {connect} from 'dva';
 import Link from 'umi/link';
 
-import { Tabs,WhiteSpace ,Carousel,Accordion,List,Switch,Icon } from 'antd-mobile';
+import { Tabs,WhiteSpace ,Carousel,Accordion,List,Switch,Icon,StickyContainer, Sticky } from 'antd-mobile';
 import Masonry from 'react-masonry-component';
 import DiscItem from '@/components/discoveryItem';
 import SearchCard from '@/components/searchCard';
@@ -348,7 +348,7 @@ class BussListPage extends Component {
         
 
     {/* 筛选 */}
-    <div 
+      <div 
         className="flex justify-content-between 
         bg-color-white line-height-l  pick-wrapper position-relative margin-bottom-15" >
               <Accordion 
