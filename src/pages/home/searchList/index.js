@@ -61,12 +61,10 @@ class BussListPage extends Component {
       storeList:[],  //店铺列表
       bannerList:[defaultImg,defaultImg,defaultImg ]
     }
-
-    this.getStoreClassList = this.getStoreClassList.bind(this);
   }
 
   componentDidMount() {
-    this.getStoreClassList();
+    this.getStoreList();
   }
   componentDidUpdate(prevProps,prevState){
     
@@ -91,39 +89,12 @@ class BussListPage extends Component {
 
   }
 
-  getStoreClassList(){
-
-    let params={
-      type:'food',
-      area_id:this.props.global.addressID
-    }
-
-    API.getCommStoreList(params).then(res=>{
-      console.log(res);
-      this.setState({
-        navData:res.list,
-      });
-      this.setStoreListParams({
-        class_id:res.recommend[0].id
-      })
-    })
-  }
-  
   handleCheckChange=(e)=>{
     if(e===undefined){
       this.hideMask();
     }else{
       this.showMask();
     }
-  }
- 
-  setStoreListParams(options,getdata=true){
-    let params = Object.assign(this.state.params,options)
-    this.setState({
-      params:params
-    })
-
-    if(getdata) this.getStoreList();
   }
   handleCheckSureClick(){
     this.setStoreListParams({
@@ -143,10 +114,19 @@ class BussListPage extends Component {
       })
     })
   }
+  setStoreListParams(options,getdata=true){
+    let params = Object.assign(this.state.params,options)
+    this.setState({
+      params:params
+    })
+
+    if(getdata) this.getStoreList();
+  }
+
   getStoreList(){
     console.log(this.state.params);
     
-    API.getStoreList(this.state.params).then(res=>{
+    API.getCommStoreList(this.state.params).then(res=>{
       console.log(res);
       this.setState({
         storeList:res
