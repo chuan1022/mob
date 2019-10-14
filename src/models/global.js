@@ -6,7 +6,6 @@ const ERR_CODE =0;
 export default  {
   namespace: 'global',
   state: {
-    address:"郑州市",
     isLogiin:false,
     coordinate:{
       lon:0,
@@ -14,10 +13,15 @@ export default  {
     },
     addressID:2656,
     locationInfo:{
-      lng:113.64964385,
-      lat:34.75661006
+      address: "",
+      area_id: 0,
+      city_name: "",
     },
-    locationPoint:null
+
+    locationPoint:{
+      lat:'',
+      lng:''
+    }
   },
   reducers: {
     handleChangeAddress(state,{payload}){
@@ -46,6 +50,10 @@ export default  {
       //   Toast.msg(response.errmsg);
       //   return false;
       // }
+      // if(callback && typeof (callback) ==='function'){
+      //   callback(response)
+      // }
+ 
       yield put({
         type: 'handleChangeLocationInfo',
         payload:response

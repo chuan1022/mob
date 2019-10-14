@@ -7,7 +7,7 @@ class SearchCard extends Component {
         this.state = {}
     }
     static defaultProps = {
-        address:'郑州',
+        address:'定位',
         showAddress:true,
         showAvatar:true,
         showService:true
@@ -42,7 +42,7 @@ class SearchCard extends Component {
                   width:'50px'
                 }}
                 className="text-align-center text-color-fff">
-                  客服
+                  消息
                 </div>
               }
               {this.props.showAvatar &&

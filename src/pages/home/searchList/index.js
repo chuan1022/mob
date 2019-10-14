@@ -4,7 +4,9 @@ import dva, {connect} from 'dva';
 import Link from 'umi/link';
 
 import { Tabs,WhiteSpace ,Carousel,Accordion,List,Switch,Icon,StickyContainer, Sticky } from 'antd-mobile';
+import Popup from "reactjs-popup";
 import Masonry from 'react-masonry-component';
+
 import DiscItem from '@/components/discoveryItem';
 import SearchCard from '@/components/searchCard';
 import BussCard from '@/components/bussCard';
@@ -26,26 +28,20 @@ const masonryOptions = {
   global
 }))
 
-class BussListPage extends Component {
+class SearchListPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      searchType:'comm',  //comm 通用搜索  food 美食搜索
       tabs: [],
-      storeList: [],
       handleOnFresh: false,
       activeType:0,
       open:false,
-      activeFirList:0,
-      activeSecList:0,
-      navData:[],
-      firClassId:0,
-      secClassId:0,
       page:1,
       pageSize:10,
-      newStoreChecked:0,
-      deliveryChecked:0,
       activePanel:'',
       showMask:false,
+      keyword:'',
       params:{
         class_id:0,
         page:1,
@@ -56,18 +52,38 @@ class BussListPage extends Component {
         sort_by:'complex',// 排序方式:complex=综合排序,praise=好评优先,high_per_capita=人均最高,low_per_capita=人均最低,nearby=离我最近,sales_volume=销量
         new_store:0,  
         is_delivery:0,
-        // is_self_get:false
+        is_self_get:0
       }, 
       storeList:[],  //店铺列表
-      bannerList:[defaultImg,defaultImg,defaultImg ]
+      bannerList:[defaultImg,defaultImg,defaultImg ],
+      options : [
+        { value: 'complex', label: '综合排序' },
+        { value: 'nearby', label: '离我最近' },
+        { value: 'praise', label: '好评优先' },
+        { value: 'high_per_capita', label: '人均最高' },
+        { value: 'low_per_capita', label: '人均最低' },
+      ],
+      activePop:''
     }
   }
 
   componentDidMount() {
-    this.getStoreList();
+    const { location } = this.props;
+    if (location.query.keyword) {
+      this.setState({
+        keyword: location.query.keyword
+      },()=>{
+        this.setStoreListParams({
+          keyword:this.state.keyword
+        })
+      });
+    }
+    // this.getStoreList();
   }
   componentDidUpdate(prevProps,prevState){
-    
+    if(this.state.activePop){
+     
+    }
   }
   toggleMask(el){
     console.log(el);
@@ -84,9 +100,9 @@ class BussListPage extends Component {
   hideMask(){
     this.setState({
       showMask:false,
-      open:false
+      open:false,
+      activePop:''
     })
-
   }
 
   handleCheckChange=(e)=>{
@@ -134,34 +150,132 @@ class BussListPage extends Component {
     })
 
   }
+  handleMenuOpen(){
+    console.log('open');
+    
+  }
+  handleFilter(type){
+    console.log(type);
+    
+    this.setState({
+      activePop:type,
+      showMask:true
+    })
+  }
   render() {
     return (
-      <div className="page-searchlist page-bg positon-relative" id="page-searchlist">
+      <div className="page-searchlist bg-color-white  positon-relative" id="page-searchlist">
+        <div className="fixed-header">
+          <WhiteSpace/>
+            <SearchCard 
+              showAddress={false}
+              showService={false}
+            ></SearchCard>
+          <WhiteSpace/>
+          {/* 筛选 */}
+          <div className="filter-wrapper  padding-row-15 clearfix">
+            <div className="pop-wrapper float-left ">
+              <p
+              onClick={this.handleFilter.bind(this,'sort')}
+              className="font-size-15 text-color-666 pop-title active"
+              >综合排序</p>
+              {this.state.activePop==="sort"?
+                <div className="pop-content">
+                <List className="my-list">
+                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'complex'})}>
+                    <span className="text-color-666 font-size-15 " >综合排序</span>
+                  </List.Item>
+  
+                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'praise'})}>
+                    <span  className="text-color-666 font-size-15">评分优先</span>
+                  </List.Item>
+  
+                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'high_per_capita'})}>
+                    <span  className="text-color-666 font-size-15">人均最高</span>
+                  </List.Item>
+  
+                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'low_per_capita'})}>
+                    <span  className="text-color-666 font-size-15">人均最低</span>
+                  </List.Item>
+                </List>
+              </div>:null
+              }
+            </div>
+            <div className="pop-wrapper float-left ">
+              <p 
+              
+              onClick={this.handleFilter.bind(this,'area')}
+              className="float-left font-size-15 text-color-666 pop-title">全城</p>
+              {this.state.activePop==="area"?
+                <div className="pop-content">
+                <List className="my-list">
+                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'complex'})}>
+                    <span className="text-color-666 font-size-15" >经开区</span>
+                  </List.Item>
+  
+                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'praise'})}>
+                    <span  className="text-color-666 font-size-15">金水区</span>
+                  </List.Item>
+  
+                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'high_per_capita'})}>
+                    <span  className="text-color-666 font-size-15">惠济区</span>
+                  </List.Item>
+  
+                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'low_per_capita'})}>
+                    <span  className="text-color-666 font-size-15">惠济区</span>
+                  </List.Item>
+                </List>
+              </div>:null
+              }
+          
+            </div>
+            <div className="pop-wrapper float-left">
+              <p
+              onClick={this.setStoreListParams.bind(this,{
+                is_self_get:this.state.params.is_self_get?0:1
+              })}
+              className="font-size-15 text-color-666 pop-title">到店用</p>
+            </div>
+            <div className="pop-wrapper float-left ">
+              <p 
+              onClick={this.setStoreListParams.bind(this,{
+                is_delivery:this.state.params.is_delivery?0:1
+              })}
+              className="font-size-15 text-color-666 pop-title">配送</p>
+            </div>
+            <div className="pop-wrapper float-right">
+              <p 
+              onClick={this.handleFilter.bind(this,'filter')}
+              className="font-size-15 text-color-666 pop-title">筛选</p>
+              {this.state.activePop==="filter"?
+              <div className="pop-content padding-row-10">
+                <ul className="tag-list">
+                  <li className="tag">快餐</li>
+                  <li className="tag">快餐</li>
+                  <li className="tag">快餐</li>
+                  <li className="tag">快餐</li>
+                  <li className="tag">快餐</li>
+                </ul>
+                <div className="panel-btns flex text-align-center">
+                  <div 
+                  onClick={this.handleCheckCancleClick.bind(this)} 
+                  className="flex-1 panel-btn default">重置</div>
+                  <div
+                  onClick={this.handleCheckSureClick.bind(this)}
+                  className="flex-1 panel-btn theme">确定</div>
+                </div>
+              </div>:null
+            }
+              
+            </div>
+          </div>
+          
+        </div>
+     
         {/* 列表 */}
         <div className="store-list-wrapper padding-row-15">
-          {
+          {this.state.storeList.length>0?
             this.state.storeList.map((item,index)=>(
-
-
-        //       size:75,
-//         distance: "911m"
-// evaluation: "0.0"
-// id: 1
-// image: ""
-// is_delivery: 1
-// is_rest: 0
-// is_self_get: 1
-// per_capita: "6.80"
-// sales: 0
-// title: "迪摩信息有限公司"
-        // avatarUrl:defaultImg,
-        // name: '杭州小笼包黄焖鸡米饭',
-        // stars: 4,
-        // cost: 66,
-        // address: '郑东新区东建材',
-        // love_number:100,
-        // distance:500,
-        // tag:['支持配送','到店自取','免费配料','急速配送'],
               <BussCard 
               name={item.title}
               stars={item.evaluation}
@@ -171,13 +285,15 @@ class BussListPage extends Component {
               rest={item.is_rest}
               delivery={item.is_delivery}
               selfGet={item.is_self_get}
-              size={104} type="type1"/>
-            ))}
+              size={104} type="searchlist"/>
+            )):null}
         </div>
+
         {/* mask */}
         {
           this.state.showMask ? 
-          <div className={`menu-mask ${this.state.open}`} onClick={this.hideMask.bind(this)}>
+          <div className={`menu-mask ${this.state.open}`} 
+          onClick={this.hideMask.bind(this)}>
           </div>:null
         }
 
@@ -186,6 +302,6 @@ class BussListPage extends Component {
     );
   }
 }
-export default BussListPage;
+export default SearchListPage;
 
 // export default Discovery;

@@ -3,7 +3,7 @@ import styles from './index.less';
 
 import Avatar from '@/components/avatar';
 import {WhiteSpace,Flex,Grid} from 'antd-mobile';
-import defaultImg from './6.jpg';
+import defaultImg from './无店铺.png';
 
 
 class bussCard extends Component {

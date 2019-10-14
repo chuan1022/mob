@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/node_modulesss
 /npm-debug.log*
 /yarn-error.log
 /yarn.lock

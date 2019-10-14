@@ -118,9 +118,9 @@ class SearchPage extends Component {
             </ul>
           </div>
           <div className="history-search-wrapper"> 
-            <p className="font-size-15 text-color-333 font-bold flex justify-content-between">
+            <p className="font-size-15 text-color-333 font-bold flex justify-content-between align-items-center">
               < span>历史搜索</span>
-              <span onClick={this.clearHistoryList.bind(this)}>清空</span>
+              <span className="delet-btn" onClick={this.clearHistoryList.bind(this)}></span>
             </p>
             <ul className="tag-list">
               {

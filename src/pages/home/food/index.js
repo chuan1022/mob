@@ -26,7 +26,7 @@ const masonryOptions = {
   global
 }))
 
-class StoreList extends Component {
+class FoodList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -50,12 +50,12 @@ class StoreList extends Component {
         class_id:0,
         page:1,
         pageSize:10,
-        lng:this.props.global.locationInfo.lng,
-        lat:this.props.global.locationInfo.lat,
         // keyword:'',
         sort_by:'complex',// 排序方式:complex=综合排序,praise=好评优先,high_per_capita=人均最高,low_per_capita=人均最低,nearby=离我最近,sales_volume=销量
         new_store:0,  
         is_delivery:0,
+        lng:this.props.global.locationPoint.lng,
+        lat:this.props.global.locationPoint.lat,
         // is_self_get:false
       }, 
       storeList:[],  //店铺列表
@@ -65,6 +65,7 @@ class StoreList extends Component {
     this.handleFirNavClick = this.handleFirNavClick.bind(this);
     this.handleSecNavClick = this.handleSecNavClick.bind(this);
     this.getStoreClassList = this.getStoreClassList.bind(this);
+    this.setStoreListParams = this.setStoreListParams.bind(this);
   }
 
   componentDidMount() {
@@ -470,4 +471,4 @@ class StoreList extends Component {
     );
   }
 }
-export default StoreList;
+export default FoodList;

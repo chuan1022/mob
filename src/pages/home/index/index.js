@@ -43,79 +43,57 @@ class Home extends Component {
       dataList: [],
       handleOnFresh: false,
       activeType:0,
-      bannerList:[defaultImg,defaultImg,defaultImg ]
+      bannerList:[defaultImg,defaultImg,defaultImg ],
+      storeList:[]
     }
-    this.getPosition = this.getPosition.bind(this);
-    this.getAttentionList = this.getAttentionList.bind(this);
 
   }
 
   componentDidMount() {
-    
-    // setTimeout(() => {
-    //   this.setState({
-    //     bannerList:[defaultImg,defaultImg,defaultImg ]
-    //   });
-    // }, 100);
-
     this.getPosition();
   }
   componentDidUpdate(prevProps,prevState){
    
   }
+  //获取大banner
+    getTopBanner(){
+
+    }
+  //获取小banner
+  getLittBanner(){
+    
+  }
+  //获取定位
   getPosition(){
-    if(this.props.locationPoint==null){
+   
       new BaiduMap().getLocation(point=>{
+        //存储经纬度
         this.props.dispatch({
           type: 'global/handleChangeLocationPoint',
           payload:point
         })
-
-        console.log(point,this.props.global.locationPoint);
-        
+        //根据经纬度获取定位信息
         this.props.dispatch({
           type: 'global/getLocationInfo',
           payload:point
         });
-
-        this.getAttentionList()
-
+        this.getCommStoreList()
       })
-    }
+   
   }
-  getAttentionList(){
-    API.getAttentionList(this.props.global.locationPoint).then(res=>{
-      console.log(res);
-    })
+  
+  //获取推荐商家列表
+  getCommStoreList(){
     let para ={
-      type:this.state.activeType,
-      user_id:this.state.user_id,
-      lon:this.state.lon,
-      lat:this.state.lat,
-      page:this.state.currentPage,
-      pageSize:this.state.currentPageSize
+      lat:this.props.global.locationPoint.lat,
+      lng:this.props.global.locationPoint.lng,
     }
-    let data =  [{
-        "id": 1,
-        "title": "string",
-        "cover_image": "string",
-        "author_avatar": "string",
-        "author_name": "string",
-        "pageview": 0,
-        "is_like": 0
-      },{
-        "id": 2,
-        "title": "string",
-        "cover_image": "string",
-        "author_avatar": "string",
-        "author_name": "string",
-        "pageview": 0,
-        "is_like": 0
-      }];
+    API.getCommStoreList(para).then(res=>{
+      console.log(res);
       this.setState({
-        dataList:data
+        storeList:res
       })
-
+    })
   }
 
   render() {
@@ -124,6 +102,7 @@ class Home extends Component {
         <div className="main-wrapper">
           {/* search */}
           <div className="top-header">
+
             <SearchCard 
             showAvatar={false}
             address={this.props.global.locationInfo&&this.props.global.locationInfo.city_name}>
@@ -175,24 +154,50 @@ class Home extends Component {
               <WhiteSpace size="xl" />
               <Flex  wrap='nowrap' justify="center" align="center">
                 <Flex.Item className="text-align-center">
-                  <img width="40" height="40" src={defaultIcon} alt=""/>
-                  <p className="text-color-333 font-size-13 padding-top-10">美食</p>
+                  <Link to="/food">
+                    <img 
+                    width="40" 
+                    height="40" 
+                    src={require('./首页-美食.png')} alt="美食"/>
+                    <p className="text-color-333 font-size-13 padding-top-10">美食</p>
+                  </Link>
                 </Flex.Item>
                 <Flex.Item className="text-align-center">
-                  <img width="40" height="40" src={defaultIcon} alt=""/>
-                  <p className="text-color-333 font-size-13 padding-top-10">美食</p>
+                  <Link to="/">
+                    <img 
+                      width="40" 
+                      height="40" 
+                      src={require('./首页-酒店.png')} alt="酒店"/>
+                    <p className="text-color-333 font-size-13 padding-top-10">酒店</p>
+                  </Link>
+                  
                 </Flex.Item>
                 <Flex.Item className="text-align-center">
-                  <img width="40" height="40" src={defaultIcon} alt=""/>
-                  <p className="text-color-333 font-size-13 padding-top-10">美食</p>
+                  <Link to="/">
+                    <img 
+                      width="40" 
+                      height="40" 
+                      src={require('./首页-旅游.png')} alt="旅游"/>
+                    <p className="text-color-333 font-size-13 padding-top-10">娱乐</p>
+                  </Link>
                 </Flex.Item>
                 <Flex.Item className="text-align-center">
-                  <img width="40" height="40" src={defaultIcon} alt=""/>
-                  <p className="text-color-333 font-size-13 padding-top-10">美食</p>
+                  <Link to="/">
+                    <img 
+                        width="40" 
+                        height="40" 
+                        src={require('./首页-娱乐.png')} alt="娱乐"/>
+                      <p className="text-color-333 font-size-13 padding-top-10">旅游</p>
+                  </Link>
                 </Flex.Item>
                 <Flex.Item className="text-align-center">
-                  <img width="40" height="40" src={defaultIcon} alt=""/>
-                  <p className="text-color-333 font-size-13 padding-top-10">美食</p>
+                <Link to="/">
+                  <img 
+                    width="40" 
+                    height="40" 
+                    src={require('./首页-其他.png')} alt="其他"/>
+                    <p className="text-color-333 font-size-13 padding-top-10">其他</p>
+                </Link>
                 </Flex.Item>
               </Flex>
               <WhiteSpace size="lg" />
@@ -296,18 +301,23 @@ class Home extends Component {
                 <WhiteSpace size="lg"/>
               </div>
               <div className="recommend-content">
-                <BussCard size={104} type="type1"/>
-                <WhiteSpace size="lg"/>
-                <BussCard type="type3"/>
-                <WhiteSpace size="lg"/>
-                <BussCard size={104} type="type1"/>
-                <WhiteSpace size="lg"/>
-                <BussCard type="type3"/>
-                <WhiteSpace size="lg"/>
-                <BussCard size={104} type="type1"/>
-                <WhiteSpace size="lg"/>
-                <BussCard type="type3"/>
-                <WhiteSpace size="lg"/>
+                {
+                  this.state.storeList.map((item,index)=>
+                  <div key={index}>
+                      <BussCard 
+                        name={item.title}
+                        stars={item.evaluation}
+                        distance={item.distance}
+                        avatarUrl={item.image}
+                        cost={item.per_capita}
+                        rest={item.is_rest}
+                        delivery={item.is_delivery}
+                        selfGet={item.is_self_get}
+                        size={104} type="type1"/>
+                    <WhiteSpace size="lg"/>
+                  </div>
+                  )
+                }
               </div>
             </div>
             
