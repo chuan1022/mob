@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import router from 'umi/router';
 import styles from './index.less';
 import Avatar from '@/components/avatar';
+import {Icon} from 'antd-mobile';
 class SearchCard extends Component {
     constructor(props) {
         super(props);
@@ -18,15 +19,16 @@ class SearchCard extends Component {
     }
     render() {
         return (
-            <div className="flex align-items-center ">
+            <div className="flex align-items-center padding-row-15">
               {this.props.showAddress &&
                <div
                 style={{
                   flex:"0 0 75px",
                   width:'75px'
                 }}
-              className="text-align-center text-color-fff font-size-16">
-                {this.props.address}>
+              className="text-align-center text-color-fff font-size-16 flex align-items-center">
+                <span>{this.props.address}</span>
+                <Icon type="right" /> 
               </div>
               }
              
@@ -43,11 +45,11 @@ class SearchCard extends Component {
               {this.props.showService &&
                 <div 
                 style={{
-                  flex:"0 0 50px",
-                  width:'50px'
+                  flex:"0 0 30px",
+                  width:'30px'
                 }}
                 className="text-align-center text-color-fff">
-                  消息
+                  <img width="20" src={require('./首页-客服.png')} alt="客服"/>
                 </div>
               }
               {this.props.showAvatar &&
