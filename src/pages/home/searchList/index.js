@@ -145,7 +145,7 @@ class SearchListPage extends Component {
     API.getCommStoreList(this.state.params).then(res=>{
       console.log(res);
       this.setState({
-        storeList:res
+        storeList:res||[]
       })
     })
 

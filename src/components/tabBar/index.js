@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styles from './index.less';
-
+import router from 'umi/router';
 import { TabBar } from 'antd-mobile';
 
 import defaultIcon from './home.png';
@@ -33,6 +33,7 @@ class VrtabBar extends Component {
               this.setState({
                 selectedTab: 'home',
               });
+              router.push('/');
             }}
           ></TabBar.Item>
           
@@ -47,6 +48,7 @@ class VrtabBar extends Component {
               this.setState({
                 selectedTab: 'discovery',
               });
+              router.push('/discovery');
             }}
           ></TabBar.Item>
 
@@ -61,6 +63,7 @@ class VrtabBar extends Component {
               this.setState({
                 selectedTab: 'nearby',
               });
+              router.push('/discovery');
             }}
           ></TabBar.Item>
 
@@ -75,6 +78,7 @@ class VrtabBar extends Component {
               this.setState({
                 selectedTab: 'my',
               });
+              router.push('/discovery');
             }}
           ></TabBar.Item>
         </TabBar>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import router from 'umi/router';
 import styles from './index.less';
 import Avatar from '@/components/avatar';
 class SearchCard extends Component {
@@ -11,6 +12,9 @@ class SearchCard extends Component {
         showAddress:true,
         showAvatar:true,
         showService:true
+    }
+    handleFocus(){
+      router.push('/search');
     }
     render() {
         return (
@@ -27,7 +31,8 @@ class SearchCard extends Component {
               }
              
               <div className="flex-1">
-                <input 
+                <input
+                onFocus={this.handleFocus.bind(this)} 
                 className={`${styles['search-input']} font-size-15`} 
                 placeholder="搜索店铺或商品"
                 style={{

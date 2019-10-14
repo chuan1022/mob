@@ -74,7 +74,7 @@ class SearchPage extends Component {
   }
   getHistoryList(){
     this.setState({
-      historyList:store.get('historyList')
+      historyList:store.get('historyList')||[]
     })
   }
   handleTagClick(keyword){

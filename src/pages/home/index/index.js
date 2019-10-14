@@ -65,20 +65,20 @@ class Home extends Component {
   }
   //获取定位
   getPosition(){
-   
-      new BaiduMap().getLocation(point=>{
-        //存储经纬度
-        this.props.dispatch({
-          type: 'global/handleChangeLocationPoint',
-          payload:point
-        })
-        //根据经纬度获取定位信息
-        this.props.dispatch({
-          type: 'global/getLocationInfo',
-          payload:point
-        });
-        this.getCommStoreList()
-      })
+    this.getCommStoreList()
+      // new BaiduMap().getLocation(point=>{
+      //   //存储经纬度
+      //   this.props.dispatch({
+      //     type: 'global/handleChangeLocationPoint',
+      //     payload:point
+      //   })
+      //   //根据经纬度获取定位信息
+      //   this.props.dispatch({
+      //     type: 'global/getLocationInfo',
+      //     payload:point
+      //   });
+      //   this.getCommStoreList()
+      // })
    
   }
   
