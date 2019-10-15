@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import styles from './index.less';
 
-import Avatar from '@/components/avatar';
+import Star from '@/components/star';
+
 import {WhiteSpace,Flex,Grid} from 'antd-mobile';
 import defaultImg from './无店铺.png';
 
@@ -48,12 +49,12 @@ class bussCard extends Component {
                         (this.props.type==="type1"||this.props.type==="type2")&&
                         <img 
                         style={{
-                           
                             height:this.props.size+'px',
+                            width:this.props.size+'px',
                             flex:`0 0 ${this.props.size}px`
                         }}
                         className={styles['avatar']}
-                        src={defaultImg} alt="" />
+                        src={this.props.avatarUrl} alt="" />
                     }
                    
                     <div
@@ -67,11 +68,11 @@ class bussCard extends Component {
                             </Flex.Item>
                         </Flex> */}
                         
-                        <p className="text-color-999 margin-top-10 margin-bottom-10 flex justify-content-between">
-                            <span
+                        <div className="text-color-999 margin-top-10 margin-bottom-10 flex justify-content-between align-items-center">
+                            <div
                                 className="font-size-14 margin-right-15">
-                                {this.props.stars}星
-                            </span>
+                                <Star rateValue={this.props.stars}></Star>
+                            </div>
                             {
                                 this.props.type==="type2"&&
                                 <span className="font-size-12 text-color-999 padding-left-15">人均{this.props.cost}元</span>
@@ -79,10 +80,10 @@ class bussCard extends Component {
                             
                             {
                                 (this.props.type==='type1'|| this.props.type==='type3')&&
-                                <span>{this.props.distance}</span>
+                                <span className="font-size-11"> &lt; {this.props.distance}</span>
                             }
                            
-                        </p>
+                        </div>
                         {
                             this.props.type==="type2"&&
                             <p className="text-color-999">
@@ -114,7 +115,13 @@ class bussCard extends Component {
                 }
                 </div>
                 {
-                    this.props.type==="type3" && 
+
+// id: 16
+// price: "12.00"
+// store_id: 2
+// title: "测试商品123123123"
+// url: "store_avatar/2019-10-09/yhbfGJnBLzsTLoC83jK0k8BqXG2I0xvzwOWuevyJ.png"
+                    this.props.goods && this.props.type==='type1'?
                     <div className={`${styles['foods-img-list']} `}>
 
                         {/* <Flex>
@@ -133,20 +140,18 @@ class bussCard extends Component {
 
                         </Flex> */}
                         <Grid 
-                            data={this.props.foodsImgList} columnNum={3} hasLine={false}
-                            square={false}
+                            data={this.props.goods} columnNum={3} hasLine={false}
+                            square={true}
                             renderItem={
                                 item=>(
                                     <div 
-                                    style={{
-                                        padding:'5px'
-                                    }}
                                    >
                                         <div  className={`${styles['foods-img-wrapper']} position-relative text-align-center`}>
-                                            <img src={item.imgUrl}/>
-                                            <p className={`${styles['foods-cost']} text-color-fff font-size-11 position-absolute`}>￥{item.cost}</p>
+                                            <img src={item.url}/>
+                                            <p className={`${styles['foods-cost']} text-color-fff font-size-11 position-absolute`}>￥{item.price}</p>
                                         </div>
-                                       <p className="font-size-14 text-color-333 line-height-l">{item.name}</p>
+                                       <p 
+                                       className="font-size-14 text-color-333 line-height-l ellipsis">{item.title}</p>
                                     </div> 
                                 ) 
                             }
@@ -165,7 +170,7 @@ class bussCard extends Component {
                             src={defaultImg} alt="" />
                         )
                     } */}
-                </div>
+                </div>:null
                 }
                 
             </div >

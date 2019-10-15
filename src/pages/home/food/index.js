@@ -115,7 +115,7 @@ class FoodList extends Component {
 
     API.getStoreClassList(params).then(res=>{
       console.log(res);
-      this.getTabscList(res.recommend)
+      if(res && res.recommend) this.getTabscList(res.recommend);
       this.setState({
         navData:res.list,
         // secId:res.recommend[0].id
@@ -228,7 +228,7 @@ class FoodList extends Component {
           {/* 顶部 */}
           <div style={{
             zIndex:2
-          }} className="position-relative bg-color-theme padding-row-15 ">
+          }} className="position-relative bg-color-theme ">
             <WhiteSpace/>
             <SearchCard 
               showAddress={false}
@@ -237,7 +237,7 @@ class FoodList extends Component {
               </SearchCard>
             <WhiteSpace size="lg"/>
             {/* tab */}
-            <div className="list-tab vr-tabs position-relative ">
+            <div className="list-tab vr-tabs position-relative padding-row-15 ">
               <Tabs
                 tabBarBackgroundColor='#ED6C2D'
                 tabBarTextStyle={{

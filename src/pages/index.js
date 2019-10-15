@@ -8,7 +8,8 @@ import BaiduMap from '@/components/baiduMap';
 import VrtabBar from '@/components/tabbar';
 import Home from './home/index';
 
-// import './index.less';
+import './index.less';
+import './common.less';
 import '@/styles/mixins.less';
 
 import API from '@/services'
@@ -57,7 +58,7 @@ class Index extends Component {
   render() {
 
     return (
-      <div className="page-home page-bg full-wrapper" id="page-home">
+      <div className="page-index" id="page-index">
         {
           this.props.global.locationInfo.area_id?
           this.props.children:null

@@ -102,7 +102,7 @@ class Home extends Component {
         <div className="main-wrapper">
           {/* search */}
           <div className="top-header">
-
+            
             <SearchCard 
             showAvatar={false}
             address={this.props.global.locationInfo&&this.props.global.locationInfo.city_name}>
@@ -313,7 +313,8 @@ class Home extends Component {
                         rest={item.is_rest}
                         delivery={item.is_delivery}
                         selfGet={item.is_self_get}
-                        size={104} type="type1"/>
+                        goods={item.goods}
+                        size={104} type='type1'/>
                     <WhiteSpace size="lg"/>
                   </div>
                   )

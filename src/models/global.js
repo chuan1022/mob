@@ -11,7 +11,7 @@ export default  {
       lon:0,
       lat:0
     },
-    addressID:2656,
+    // addressID:2656,
     locationInfo:{
       address: "",
       area_id: 0,

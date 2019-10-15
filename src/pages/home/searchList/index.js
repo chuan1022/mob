@@ -52,7 +52,8 @@ class SearchListPage extends Component {
         sort_by:'complex',// 排序方式:complex=综合排序,praise=好评优先,high_per_capita=人均最高,low_per_capita=人均最低,nearby=离我最近,sales_volume=销量
         new_store:0,  
         is_delivery:0,
-        is_self_get:0
+        is_self_get:0,
+        regionList:[] //地区列表
       }, 
       storeList:[],  //店铺列表
       bannerList:[defaultImg,defaultImg,defaultImg ],
@@ -78,7 +79,21 @@ class SearchListPage extends Component {
         })
       });
     }
-    // this.getStoreList();
+    this.getRegionList();
+  }
+  getRegionList(){
+    API.getRegionList({
+      area_id:this.props.global.locationInfo.area_id
+    }).then(res=>{
+      console.log(res);
+      this.setState({
+        regionList:res
+      })
+    })
+  }
+  //获取筛选列表
+  getFilterList(){
+
   }
   componentDidUpdate(prevProps,prevState){
     if(this.state.activePop){
@@ -141,7 +156,7 @@ class SearchListPage extends Component {
 
   getStoreList(){
     console.log(this.state.params);
-    
+    //美食和其他接口不一样 根据路由切换
     API.getCommStoreList(this.state.params).then(res=>{
       console.log(res);
       this.setState({
@@ -205,25 +220,21 @@ class SearchListPage extends Component {
               <p 
               
               onClick={this.handleFilter.bind(this,'area')}
-              className="float-left font-size-15 text-color-666 pop-title">全城</p>
+              className={` float-left font-size-15 text-color-666 pop-title`}>全城</p>
               {this.state.activePop==="area"?
                 <div className="pop-content">
                 <List className="my-list">
-                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'complex'})}>
-                    <span className="text-color-666 font-size-15" >经开区</span>
-                  </List.Item>
-  
-                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'praise'})}>
-                    <span  className="text-color-666 font-size-15">金水区</span>
-                  </List.Item>
-  
-                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'high_per_capita'})}>
-                    <span  className="text-color-666 font-size-15">惠济区</span>
-                  </List.Item>
-  
-                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'low_per_capita'})}>
-                    <span  className="text-color-666 font-size-15">惠济区</span>
-                  </List.Item>
+                  {
+                    this.state.regionList.map((item,index)=>
+                    <List.Item 
+                    key={item.id}
+                    onClick={this.setStoreListParams.bind(this,{region_id:item.id})}>
+                      <span className="text-color-666 font-size-15" >
+                        {item.name}
+                      </span>
+                    </List.Item>
+                  )
+                  }
                 </List>
               </div>:null
               }
@@ -234,14 +245,14 @@ class SearchListPage extends Component {
               onClick={this.setStoreListParams.bind(this,{
                 is_self_get:this.state.params.is_self_get?0:1
               })}
-              className="font-size-15 text-color-666 pop-title">到店用</p>
+              className={`${this.state.params.is_self_get?'active':''} font-size-15 text-color-666 pop-title`}>到店用</p>
             </div>
             <div className="pop-wrapper float-left ">
               <p 
               onClick={this.setStoreListParams.bind(this,{
                 is_delivery:this.state.params.is_delivery?0:1
               })}
-              className="font-size-15 text-color-666 pop-title">配送</p>
+              className={`${this.state.params.is_delivery?'active':''} font-size-15 text-color-666 pop-title`}>配送</p>
             </div>
             <div className="pop-wrapper float-right">
               <p 

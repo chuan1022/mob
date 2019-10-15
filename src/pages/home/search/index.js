@@ -11,8 +11,6 @@ import { WhiteSpace,Icon} from 'antd-mobile';
 
 import SearchCard from '@/components/searchCard';
 
-
-import defaultImg from './无商品.png';
 import API from '@/services'
 import './index.less';
 import '@/styles/mixins.less';
@@ -52,7 +50,7 @@ class SearchPage extends Component {
   getHotSearch(){
     console.log(this.state.params);
     let params={
-      area_id:this.props.global.addressID,
+      area_id:this.props.global.locationInfo.area_id,
       type:0  //0=通用,1=美食,2=其他
     }
     API.getHotSearch(params).then(res=>{

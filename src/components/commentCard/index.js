@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styles from './index.less';
 import Avatar from '@/components/avatar';
+
 import { Grid, WhiteSpace } from 'antd-mobile';
 import defaultImg from './6.jpg';
 

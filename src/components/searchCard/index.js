@@ -35,7 +35,7 @@ class SearchCard extends Component {
               <div className="flex-1">
                 <input
                 onFocus={this.handleFocus.bind(this)} 
-                className={`${styles['search-input']} font-size-15`} 
+                className={`vr-input vr-input-search font-size-15`} 
                 placeholder="搜索店铺或商品"
                 style={{
                   width:'100%',
