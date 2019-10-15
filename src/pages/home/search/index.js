@@ -44,6 +44,7 @@ class SearchPage extends Component {
     })
   }
   handleSearchClick(){
+    if(!this.state.keyword) return;
     this.setHistoryList(this.state.keyword)
     this.routerToNext(this.state.keyword)
   }
@@ -81,6 +82,7 @@ class SearchPage extends Component {
   }
   routerToNext(keyword){
     console.log('搜索'+keyword);
+   
     router.push({ 
       pathname: '/searchlist',
       query:{

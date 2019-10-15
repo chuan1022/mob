@@ -46,15 +46,17 @@ class SearchListPage extends Component {
         class_id:0,
         page:1,
         pageSize:10,
-        lng:this.props.global.locationInfo.lng,
-        lat:this.props.global.locationInfo.lat,
+        lng:this.props.global.locationPoint.lng,
+        lat:this.props.global.locationPoint.lat,
         // keyword:'',
         sort_by:'complex',// 排序方式:complex=综合排序,praise=好评优先,high_per_capita=人均最高,low_per_capita=人均最低,nearby=离我最近,sales_volume=销量
         new_store:0,  
         is_delivery:0,
         is_self_get:0,
-        regionList:[] //地区列表
+        industry_id:0
       }, 
+      typeList:[],  //行业列表
+      regionList:[], //地区列表
       storeList:[],  //店铺列表
       bannerList:[defaultImg,defaultImg,defaultImg ],
       options : [
@@ -64,7 +66,27 @@ class SearchListPage extends Component {
         { value: 'high_per_capita', label: '人均最高' },
         { value: 'low_per_capita', label: '人均最低' },
       ],
-      activePop:''
+      activePop:'',
+      filterText:'综合排序',
+      filterTypes:[{
+        title:'综合排序',
+        value:'complex'
+      },{
+        title:'评分优先',
+        value:'praise'
+      },{
+        title:'人均最高',
+        value:'high_per_capita'
+      },{
+        title:'人均最低',
+        value:'low_per_capita'
+      },{
+        title:'综合排序',
+        value:'sales_volume'
+      },{
+        title:'综合排序',
+        value:'nearby'
+      }]
     }
   }
 
@@ -80,7 +102,17 @@ class SearchListPage extends Component {
       });
     }
     this.getRegionList();
+    this.getStoreType();
   }
+  //行业类型
+  getStoreType(){
+    API.getStoreType().then(res=>{
+      this.setState({
+        typeList:res
+      });
+    })
+  }
+  //地区列表
   getRegionList(){
     API.getRegionList({
       area_id:this.props.global.locationInfo.area_id
@@ -128,29 +160,26 @@ class SearchListPage extends Component {
     }
   }
   handleCheckSureClick(){
-    this.setStoreListParams({
-      new_store:this.state.newStoreChecked,
-      is_delivery:this.state.deliveryChecked
-    })
-  }
-  handleCheckCancleClick(){
     this.setState({
-      newStoreChecked:0,
-      deliveryChecked:0,
-      activePanel:''
-    },()=>{
-      this.setStoreListParams({
-        new_store:this.state.newStoreChecked,
-        is_delivery:this.state.deliveryChecked
-      })
+      activePop:'',
+      showMask:false
+    })
+    this.getStoreList();
+  }
+  handleCheckResetClick(){
+    this.setState({
+      params:Object.assign({},this.state.params,{industry_id:0})
     })
   }
   setStoreListParams(options,getdata=true){
     let params = Object.assign(this.state.params,options)
+    let filterText=this.state.filterTypes.find((el)=>{return el.value==params.sort_by}).title
     this.setState({
-      params:params
+      params:params,
+      showMask:false,
+      activePop:'',
+      filterText:filterText
     })
-
     if(getdata) this.getStoreList();
   }
 
@@ -177,7 +206,16 @@ class SearchListPage extends Component {
       showMask:true
     })
   }
+  handleTagClick(id){
+    // console.log(id);
+    this.setState({
+      params:Object.assign({},this.state.params,{industry_id:id})
+    })
+    // this.setStoreListParams({industry_id:id},false)
+
+  }
   render() {
+
     return (
       <div className="page-searchlist bg-color-white  positon-relative" id="page-searchlist">
         <div className="fixed-header">
@@ -185,6 +223,9 @@ class SearchListPage extends Component {
             <SearchCard 
               showAddress={false}
               showService={false}
+              inputStyle={{
+                backgroundColor:'#F4F4F4'
+              }}
             ></SearchCard>
           <WhiteSpace/>
           {/* 筛选 */}
@@ -193,7 +234,7 @@ class SearchListPage extends Component {
               <p
               onClick={this.handleFilter.bind(this,'sort')}
               className="font-size-15 text-color-666 pop-title active"
-              >综合排序</p>
+              >{this.state.filterText}</p>
               {this.state.activePop==="sort"?
                 <div className="pop-content">
                 <List className="my-list">
@@ -259,17 +300,21 @@ class SearchListPage extends Component {
               onClick={this.handleFilter.bind(this,'filter')}
               className="font-size-15 text-color-666 pop-title">筛选</p>
               {this.state.activePop==="filter"?
-              <div className="pop-content padding-row-10">
+              <div className="pop-content padding-row-15">
                 <ul className="tag-list">
-                  <li className="tag">快餐</li>
-                  <li className="tag">快餐</li>
-                  <li className="tag">快餐</li>
-                  <li className="tag">快餐</li>
-                  <li className="tag">快餐</li>
+                  {
+                    this.state.typeList.map((item,index)=>
+                    <li 
+                    onClick={this.handleTagClick.bind(this,item.id)}
+                    key={item.id} 
+                    className={`tag ${this.state.params.industry_id===item.id?'active':''}`}>{item.name}</li>
+                    )
+                    }
+                  
                 </ul>
                 <div className="panel-btns flex text-align-center">
                   <div 
-                  onClick={this.handleCheckCancleClick.bind(this)} 
+                  onClick={this.handleCheckResetClick.bind(this)} 
                   className="flex-1 panel-btn default">重置</div>
                   <div
                   onClick={this.handleCheckSureClick.bind(this)}
@@ -287,16 +332,35 @@ class SearchListPage extends Component {
         <div className="store-list-wrapper padding-row-15">
           {this.state.storeList.length>0?
             this.state.storeList.map((item,index)=>(
-              <BussCard 
-              name={item.title}
-              stars={item.evaluation}
-              distance={item.distance}
-              avatarUrl={item.image}
-              cost={item.per_capita}
-              rest={item.is_rest}
-              delivery={item.is_delivery}
-              selfGet={item.is_self_get}
-              size={104} type="searchlist"/>
+              <div key={item.id}>
+                <BussCard
+                  storeInfo={{
+                    avatarUrl:item.image,
+                    name: item.title,
+                    stars: item.evaluation,
+                    cost: item.per_capita,
+                    address: item.address,
+                    love_number:100,
+                    distance:item.distance,
+                    delivery:item.is_delivery,
+                    selfGet:item.is_self_get,
+                    isRest:item.is_rest,
+                    goodsList:item.goods,
+                    rest:1
+                  }}
+
+                  size={75}
+                  showAvatar={true}
+                  showRight={false}
+                  showCost2={false}
+                  showTags={false}
+                  showDistance={false}
+                  wrapperStyle={{
+                    borderBottom:'1px solid #ECEBEB',
+                    borderRadius: 'unset',
+                  }}/>
+              </div>
+             
             )):null}
         </div>
 

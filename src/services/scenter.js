@@ -22,6 +22,11 @@ API.getCommStoreList=(params)=>{
   return proxyRequest.get(baseUrl+'/stores/search', params)
 }
 
+//获取行业类型
+API.getStoreType=(params)=>{
+  return proxyRequest.get(baseUrl+'/store/type', params)
+}
+
 //获取首页顶部banner
 
 //获取首页小banner

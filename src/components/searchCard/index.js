@@ -12,7 +12,8 @@ class SearchCard extends Component {
         address:'定位',
         showAddress:true,
         showAvatar:true,
-        showService:true
+        showService:true,
+        inputStyle:{}
     }
     handleFocus(){
       router.push('/search');
@@ -35,12 +36,10 @@ class SearchCard extends Component {
               <div className="flex-1">
                 <input
                 onFocus={this.handleFocus.bind(this)} 
-                className={`vr-input vr-input-search font-size-15`} 
+                className={`vr-input vr-input-search font-size-15 ${styles['search-input']}`} 
                 placeholder="搜索店铺或商品"
-                style={{
-                  width:'100%',
-                  display:'block'
-                }}  type="text"/>
+                style={this.props.inputStyle}  
+                type="text"/>
               </div>
               {this.props.showService &&
                 <div 

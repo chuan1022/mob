@@ -59,7 +59,28 @@ class FoodList extends Component {
         // is_self_get:false
       }, 
       storeList:[],  //店铺列表
-      bannerList:[defaultImg,defaultImg,defaultImg ]
+      bannerList:[defaultImg,defaultImg,defaultImg ],
+      filterText:'综合排序',
+      filterTypes:[{
+        title:'综合排序',
+        value:'complex'
+      },{
+        title:'评分优先',
+        value:'praise'
+      },{
+        title:'人均最高',
+        value:'high_per_capita'
+      },{
+        title:'人均最低',
+        value:'low_per_capita'
+      },{
+        title:'综合排序',
+        value:'sales_volume'
+      },{
+        title:'综合排序',
+        value:'nearby'
+      }],
+      activePop:''
     }
     this.handelTabClick = this.handelTabClick.bind(this);
     this.handleFirNavClick = this.handleFirNavClick.bind(this);
@@ -89,9 +110,9 @@ class FoodList extends Component {
   hideMask(){
     this.setState({
       showMask:false,
-      open:false
+      open:false,
+      activePop:''
     })
-
   }
   getTabscList(data){
     let tabs=[];
@@ -110,7 +131,7 @@ class FoodList extends Component {
 
     let params={
       type:'food',
-      area_id:this.props.global.addressID
+      area_id:this.props.global.locationInfo.area_id
     }
 
     API.getStoreClassList(params).then(res=>{
@@ -182,11 +203,20 @@ class FoodList extends Component {
   }
   setStoreListParams(options,getdata=true){
     let params = Object.assign(this.state.params,options)
+    let filterText=this.state.filterTypes.find((el)=>{return el.value==params.sort_by}).title
     this.setState({
-      params:params
+      params:params,
+     
+      filterText:filterText
     })
 
-    if(getdata) this.getStoreList();
+    if(getdata){
+      this.setState({
+        showMask:false,
+        activePop:'',
+      })
+      this.getStoreList();
+    } 
   }
   handleCheckSureClick(){
     this.setStoreListParams({
@@ -210,7 +240,11 @@ class FoodList extends Component {
   }
   getStoreList(){
     console.log(this.state.params);
-    
+    // let params={
+    //   lat: 34.75661006,
+    //   lng: 113.64964385,
+    //   class_id:1
+    // }
     API.getStoreList(this.state.params).then(res=>{
       console.log(res);
       this.setState({
@@ -219,9 +253,17 @@ class FoodList extends Component {
     })
 
   }
+  handleFilter(type){
+    console.log(type);
+    
+    this.setState({
+      activePop:type,
+      showMask:true
+    })
+  }
   render() {
     return (
-      <div className="page-list page-bg positon-relative" id="page-list">
+      <div className="page-food page-bg positon-relative" id="page-food">
 
         {/* 顶部导航 */}
         <div className="border-box top-wrapper ">
@@ -239,6 +281,7 @@ class FoodList extends Component {
             {/* tab */}
             <div className="list-tab vr-tabs position-relative padding-row-15 ">
               <Tabs
+                page={3}
                 tabBarBackgroundColor='#ED6C2D'
                 tabBarTextStyle={{
                   'fontSize': '15px',
@@ -247,6 +290,7 @@ class FoodList extends Component {
                 tabBarUnderlineStyle={{
                   'display': 'none'
                 }}
+
                 tabs={this.state.tabs}
                 renderTabBar={props => 
                 <Tabs.DefaultTabBar {...props
@@ -347,58 +391,64 @@ class FoodList extends Component {
           </Carousel>
         </div>
         
+       {/* 筛选 */}
+       <div className="filter-wrapper  padding-row-15 clearfix">
+            <div className="pop-wrapper float-left ">
+              <p
+              onClick={this.handleFilter.bind(this,'sort')}
+              className="font-size-15 text-color-666 pop-title active"
+              >{this.state.filterText}</p>
+              {this.state.activePop==="sort"?
+                <div className="pop-content">
+                <List className="my-list">
+                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'complex'})}>
+                    <span className="text-color-666 font-size-15 " >综合排序</span>
+                  </List.Item>
+  
+                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'praise'})}>
+                    <span  className="text-color-666 font-size-15">评分优先</span>
+                  </List.Item>
+  
+                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'high_per_capita'})}>
+                    <span  className="text-color-666 font-size-15">人均最高</span>
+                  </List.Item>
 
-    {/* 筛选 */}
-      <div 
-        className="flex justify-content-between 
-        bg-color-white line-height-l  pick-wrapper position-relative margin-bottom-15" >
-              <Accordion 
-              onChange={this.handleCheckChange}
-              accordion={true} 
-              defaultActiveKey={this.state.activePanel} 
-              className="my-accordion" >
-                <Accordion.Panel
-                
-                header={
-                <span  className="font-size-15 font-blod text-color-666">综合排序</span> 
-                }>
-                  <List className="my-list">
-                    <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'complex'})}>
-                      <span className="text-color-666 font-size-15" >综合排序</span>
-                    </List.Item>
+                  <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'low_per_capita'})}>
+                    <span  className="text-color-666 font-size-15">人均最低</span>
+                  </List.Item>
+                </List>
+              </div>:null
+              }
+            </div>
 
-                    <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'praise'})}>
-                      <span  className="text-color-666 font-size-15">评分优先</span>
-                    </List.Item>
+            <div className="pop-wrapper float-left">
+              <p
+              onClick={this.setStoreListParams.bind(this,{
+                sort_by:this.state.params.sort_by==='nearby'?'complex':'nearby'
+              })}
+              className={`${this.state.params.sort_by==='nearby'?'active':''} font-size-15 text-color-666 pop-title`}>距离</p>
+            </div>
 
-                    <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'high_per_capita'})}>
-                      <span  className="text-color-666 font-size-15">人均最高</span>
-                    </List.Item>
-
-                    <List.Item onClick={this.setStoreListParams.bind(this,{sort_by:'low_per_capita'})}>
-                      <span  className="text-color-666 font-size-15">人均最低</span>
-                    </List.Item>
-
-                  </List>
-                </Accordion.Panel>
-                <p 
-                  onClick={this.setStoreListParams.bind(this,{sort_by:'nearby'})}
-                  className={`${'active'} item font-size-15 text-color-666`}>距离</p>
-                  <p 
-                  onClick={this.setStoreListParams.bind(this,{sort_by:'sales_volume'})}
-                  className={`${'active'} item font-size-15 text-color-666`}>销量</p>
-                <Accordion.Panel
-                  header={
-                  <span className="font-size-15 text-color-666">筛选</span> 
-                  }>
-                  <List className="my-list">
+            <div className="pop-wrapper float-left ">
+              <p 
+              onClick={this.setStoreListParams.bind(this,{
+                sort_by:this.state.params.sort_by==='sales_volume'?'complex':'sales_volume'
+              })}
+              className={`${this.state.params.sort_by==='sales_volume'?'active':''}   font-size-15 text-color-666 pop-title`}>销量</p>
+            </div>
+            <div className="pop-wrapper float-right">
+              <p 
+              onClick={this.handleFilter.bind(this,'filter')}
+              className="font-size-15 text-color-666 pop-title">筛选</p>
+              {this.state.activePop==="filter"?
+              <div className="pop-content padding-row-15">
+                <List className="my-list">
                     <List.Item 
                       className="text-color-666 font-size-15"
                       extra={<Switch
                       checked={this.state.newStoreChecked}
                       color='#ED6C2D'
                       onChange={() => {
-
                           this.setState({
                             newStoreChecked: !this.state.newStoreChecked?1:0,
                           },()=>{
@@ -428,37 +478,51 @@ class FoodList extends Component {
                       <span  className="text-color-666 font-size-15">可配送</span>
                     </List.Item>
                   </List>
-                  <div className="panel-btns flex text-align-center">
-                    <div 
-                    onClick={this.handleCheckCancleClick.bind(this)} 
-                    className="flex-1 panel-btn default">清空</div>
-                    <div
-                    onClick={this.handleCheckSureClick.bind(this)}
-                    className="flex-1 panel-btn theme">确定</div>
-                  </div>
-                </Accordion.Panel>
+                <div className="panel-btns flex text-align-center">
+                  <div 
+                  onClick={this.handleCheckCancleClick.bind(this)} 
+                  className="flex-1 panel-btn default">重置</div>
+                  <div
+                  onClick={this.handleCheckSureClick.bind(this)}
+                  className="flex-1 panel-btn theme">确定</div>
+                </div>
+              </div>:null
+            }
               
-              </Accordion>
-            
-        </div>
-
+            </div>
+          </div>
 
         {/* 列表 */}
         <div className="store-list-wrapper padding-row-15">
           {
             this.state.storeList.length>0?
             this.state.storeList.map((item,index)=>(
-              <BussCard 
-              name={item.title}
-              stars={item.evaluation}
-              distance={item.distance}
-              avatarUrl={item.image}
-              cost={item.per_capita}
-              rest={item.is_rest}
-              delivery={item.is_delivery}
-              selfGet={item.is_self_get}
-              size={104} type="type1"/>
-            )):null
+              <BussCard
+                key={item.id}
+                storeInfo={{
+                  avatarUrl:item.image,
+                  name: item.title,
+                  stars: item.evaluation,
+                  cost: item.per_capita,
+                  address: item.address,
+                  love_number:100,
+                  distance:item.distance,
+                  delivery:item.is_delivery,
+                  selfGet:item.is_self_get,
+                  isRest:item.is_rest,
+                  goodsList:item.goods
+                }}
+
+                size={75}
+                showAvatar={true}
+                showRight={false}
+                showCost1={false}
+                showAddress={false}
+                wrapperStyle={{
+                  margin:"10px 0"
+                }}/>
+            ))
+            :null
           }
         </div>
         {/* mask */}

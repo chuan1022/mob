@@ -304,17 +304,27 @@ class Home extends Component {
                 {
                   this.state.storeList.map((item,index)=>
                   <div key={index}>
-                      <BussCard 
-                        name={item.title}
-                        stars={item.evaluation}
-                        distance={item.distance}
-                        avatarUrl={item.image}
-                        cost={item.per_capita}
-                        rest={item.is_rest}
-                        delivery={item.is_delivery}
-                        selfGet={item.is_self_get}
-                        goods={item.goods}
-                        size={104} type='type1'/>
+                      <BussCard
+                        storeInfo={{
+                          avatarUrl:item.image,
+                          name: item.title,
+                          stars: item.evaluation,
+                          cost: item.per_capita,
+                          address: '郑东新区东建材',
+                          love_number:100,
+                          distance:item.distance,
+                          delivery:item.is_delivery,
+                          selfGet:item.is_self_get,
+                          isRest:item.is_rest,
+                          goodsList:item.goods
+                        }}
+                        size={104}
+                        showAvatar={item.goods?false:true}
+                        showAddress={false}
+                        showGoods={true}
+                        showRight={false}
+                        showCost1={false}
+                        type='type1'/>
                     <WhiteSpace size="lg"/>
                   </div>
                   )
