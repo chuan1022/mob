@@ -163,7 +163,7 @@ class Home extends Component {
                   </Link>
                 </Flex.Item>
                 <Flex.Item className="text-align-center">
-                  <Link to="/">
+                  <Link to="/list?industry_id=hotel">
                     <img 
                       width="40" 
                       height="40" 
@@ -173,25 +173,25 @@ class Home extends Component {
                   
                 </Flex.Item>
                 <Flex.Item className="text-align-center">
-                  <Link to="/">
+                  <Link to="/list?industry_id=toruism">
                     <img 
                       width="40" 
                       height="40" 
                       src={require('./首页-旅游.png')} alt="旅游"/>
-                    <p className="text-color-333 font-size-13 padding-top-10">娱乐</p>
+                    <p className="text-color-333 font-size-13 padding-top-10">旅游</p>
                   </Link>
                 </Flex.Item>
                 <Flex.Item className="text-align-center">
-                  <Link to="/">
+                  <Link to="/list?industry_id=entertainment">
                     <img 
                         width="40" 
                         height="40" 
                         src={require('./首页-娱乐.png')} alt="娱乐"/>
-                      <p className="text-color-333 font-size-13 padding-top-10">旅游</p>
+                      <p className="text-color-333 font-size-13 padding-top-10">娱乐</p>
                   </Link>
                 </Flex.Item>
                 <Flex.Item className="text-align-center">
-                <Link to="/">
+                  <Link to="/list?industry_id=other">
                   <img 
                     width="40" 
                     height="40" 
@@ -333,10 +333,6 @@ class Home extends Component {
             </div>
             
           </div>
-        </div>
-        
-        <div className="tabbar">
-          <VrtabBar />
         </div>
       </div >
     );

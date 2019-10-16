@@ -16,7 +16,7 @@ class Star extends React.Component {
     canClick: false,
     rateNum: 5,
     handleSelectRate: null,
-    rateValue: 3
+    rateValue: 0
   }
   handleSelectRate (value) {
       if (!this.props.canClick) {
@@ -30,6 +30,7 @@ class Star extends React.Component {
 
   render () {
       const {rateArray, rateValue} = this.state
+      
       const {rateNum} = this.props
       return (
           <div className={`${styles["rate"]}`}>

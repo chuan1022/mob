@@ -1,16 +1,13 @@
 import API from '@/services';
 import BaiduMap from '@/components/baiduMap';
 import {Toast} from 'antd-mobile';
-
+import store from 'store';
 const ERR_CODE =0;
 export default  {
   namespace: 'global',
   state: {
-    isLogiin:false,
-    coordinate:{
-      lon:0,
-      lat:0
-    },
+    isLogiin:false, 
+    showTab:true,
     // addressID:2656,
     locationInfo:{
       address: "",
@@ -31,15 +28,23 @@ export default  {
       };
     },
     handleChangeLocationPoint(state,{payload}){
+      store.set('locationPoint',payload)
       return {
         ...state,
         locationPoint:payload,
       };
     },
     handleChangeLocationInfo(state,{payload}){
+      store.set('locationInfo',payload)
       return {
         ...state,
         locationInfo:payload,
+      };
+    },
+    handleChangeShowTab(state,{payload}){
+      return {
+        ...state,
+        showTab:payload,
       };
     },
   },

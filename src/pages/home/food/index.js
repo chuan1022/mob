@@ -281,7 +281,7 @@ class FoodList extends Component {
             {/* tab */}
             <div className="list-tab vr-tabs position-relative padding-row-15 ">
               <Tabs
-                page={3}
+                page={2}
                 tabBarBackgroundColor='#ED6C2D'
                 tabBarTextStyle={{
                   'fontSize': '15px',
@@ -290,14 +290,11 @@ class FoodList extends Component {
                 tabBarUnderlineStyle={{
                   'display': 'none'
                 }}
-
+                renderTabBar={props => <Tabs.DefaultTabBar {...props} page={3} />}
                 tabs={this.state.tabs}
-                renderTabBar={props => 
-                <Tabs.DefaultTabBar {...props
-                } 
                 renderTab={tab=>
                   <div className={`${this.state.secClassId===tab.id?'active':''} tab-item`}>{tab.title}</div>
-                } />}
+                }
                 onTabClick={(tab,index)=>this.handelTabClick(tab,index)}
               >
               </Tabs>

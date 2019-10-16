@@ -192,11 +192,9 @@ class SearchListPage extends Component {
         storeList:res||[]
       })
     })
-
   }
   handleMenuOpen(){
     console.log('open');
-    
   }
   handleFilter(type){
     console.log(type);

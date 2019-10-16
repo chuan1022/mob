@@ -20,6 +20,7 @@ const app = dva();
 }))
 
 class Index extends Component {
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -41,6 +42,10 @@ class Index extends Component {
  
   //获取定位
   getPosition(){
+  
+    let locationInfo=store.get('locationInfo'),locationPoint=store.get('locationPoint');
+
+    if( !locationInfo || !locationPoint){
       new BaiduMap().getLocation(point=>{
         //存储经纬度
         this.props.dispatch({
@@ -53,6 +58,19 @@ class Index extends Component {
           payload:point
         });
       })
+    }else{
+      //存储经纬度
+      this.props.dispatch({
+        type: 'global/handleChangeLocationPoint',
+        payload:locationPoint
+      })
+      //存储定位信息
+      this.props.dispatch({
+        type: 'global/handleChangeLocationInfo',
+        payload:locationInfo
+      });
+    }
+  
   }
   
   render() {
@@ -63,9 +81,13 @@ class Index extends Component {
           this.props.global.locationInfo.area_id?
           this.props.children:null
          }
-        <div className="tabbar">
-          <VrtabBar />
-        </div>
+         {
+          this.props.global.showTab?
+          <div className="tabbar">
+            <VrtabBar />
+          </div>:null
+         }
+        
       </div >
     );
   }

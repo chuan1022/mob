@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
+import router from 'umi/router';
 
 import './index.less';
 import '@/styles/mixins.less';
@@ -15,6 +16,8 @@ import BussCard from '@/components/bussCard';
 import Avatar from '@/components/avatar';
 import { WhiteSpace,InputItem,List } from 'antd-mobile';
 import { createForm, formShape } from 'rc-form';
+
+import API from '@/services';
 
 class Discovery extends Component {
   constructor(props) {
@@ -52,16 +55,29 @@ class Discovery extends Component {
     }
   }
   static propTypes = {
-    form: formShape,
-   
+    form: formShape
   }
-  onScrollStart() {
-    console.log('start');
+  getData(){
+    let params={
+      id:this.state.id
+    }
+    console.log(params);
+    API.findingDetail(params).then(res=>{
+      console.log(res);
+      
+    })
   }
   componentDidMount() {
-    // this.props.form.setFieldsValue({
-    //   input3: this.state.text
-    // })
+
+    const { match } = this.props;
+  
+    if (match.params.id) {
+      this.setState({
+        id: match.params.id
+      },()=>{
+        this.getData()
+      });
+    }
   }
   render() {
     const { getFieldProps, getFieldError } = this.props.form;
