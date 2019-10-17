@@ -84,7 +84,7 @@ class List extends Component {
   
     
     return (
-      <div className="page-home page-bg full-wrapper" id="page-home">
+      <div className="page-list page-bg full-wrapper" id="page-list">
         <div className="main-wrapper">
           {/* search */}
           <div className="top-header">

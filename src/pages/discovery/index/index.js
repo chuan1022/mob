@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import dva, {connect} from 'dva';
 import Link from 'umi/link';
+import Scroll from 'react-bscroll'
+import 'react-bscroll/lib/react-scroll.css'
 
 import Masonry from 'react-masonry-component';
 import dataList from './dadta';
@@ -25,21 +27,18 @@ const masonryOptions = {
   global
 }))
 
-class DiscoveryDetail extends Component {
+class Discovery extends Component {
   constructor(props) {
     super(props);
     this.state = {
       tabs: [],
       dataList: [],
-      handleOnFresh: false,
       activeType:1,
       page:1,
-      pageSize:2,
+      pageSize:4,
       data:{},
       scrollDirection:'up'
     }
-    this.handleOnFresh = this.handleOnFresh.bind(this);
-    this.getFindType = this.getFindType.bind(this);
   }
   onScrollStart() {
     console.log('start');
@@ -82,23 +81,7 @@ class DiscoveryDetail extends Component {
       console.log(err);
     })
   }
-  getAttentionList(options,callback){
-    let para ={
-      type:options.type,
-      area_id:this.props.global.locationInfo.area_id,
-      page:this.state["page"+options.type]||0,
-      pageSize:this.state.pageSize
-    }
-    API.finding(para).then(res=>{
-      console.log(res);
-      let data =this.state["list"+options.type]||[];
-      this.setState({
-        ['list'+options.type]:data.concat(res),
-        ["page"+options.type]:this.state["page"+options.type]||0
-      }) 
-      if(callback && typeof (callback) ==="function") callback()
-    })
-  }
+ 
   handleTabChange(tab,index){
     console.log(tab);
     this.setState({
@@ -107,36 +90,75 @@ class DiscoveryDetail extends Component {
     if(this.state['list'+tab.type]) return;
     this.getAttentionList(tab)
   }
-
+  
+  getAttentionList(options,callback){
+    let para ={
+      type:options.type,
+      area_id:this.props.global.locationInfo.area_id,
+      page:this.state["page"+options.type]||1,
+      pageSize:this.state.pageSize
+    }
+    console.log(para);
+    
+    API.finding(para).then(res=>{
+      let data ;
+      if(para.page==1){
+        data=[]
+      }else{
+        data=this.state["list"+options.type]||[];
+      }
+      data = data.concat(res)
+      console.log(data)
+      this.setState({
+        ['list'+options.type]:data,
+        ["page"+options.type]:para.page
+      }) 
+      if(callback && typeof (callback) ==="function") callback()
+    })
+  }
   //加载更多
   handleLoadMore(options){
-    console.log(options);
-    this.setState({
-      ["page"+options.type]:this.state["page"+options.type]+1
-    },()=>{
-      this.getAttentionList(options)
+    let page = this.state["page"+options.type]+1;
+
+    
+    return new Promise(resolve=>{
+
+      this.setState({
+        ["page"+options.type]:page
+      },()=>{
+        this.getAttentionList(options,()=>{
+          resolve()
+        })
+      })
     })
   }
   //下拉刷新
   handleDownRefresh(options){
-    this.setState({ 
-      ['refreshing'+options.type]: true 
-    });
-    this.getAttentionList({type:this.state.activeType},()=>{
-      this.setState({ 
-        ['refreshing'+options.type]: false 
-      });
+    return new Promise(resolve=>{
+      // this.setState({ 
+      //   ['refreshing'+options.type]: true 
+      // });
+      this.setState({
+        ["page"+options.type]:1
+      },()=>{
+        this.getAttentionList(options,()=>{
+          // this.setState({ 
+          //   ['refreshing'+options.type]: false 
+          // });
+          resolve()
+        })
+      })
     })
   }
   //handle refresh
-  handleOnFresh(options) {
+  // handleOnFresh(options) {
     
-    if(this.state.scrollDirection==="down"){
-      this.handleDownRefresh(options)
-    }else if(this.state.scrollDirection==="up"){
-        this.handleLoadMore(options)
-    }
-  } 
+  //   if(this.state.scrollDirection==="down"){
+  //     this.handleDownRefresh(options)
+  //   }else if(this.state.scrollDirection==="up"){
+  //       this.handleLoadMore(options)
+  //   }
+  // } 
 
   render() {
     return (
@@ -163,8 +185,40 @@ class DiscoveryDetail extends Component {
           >
             {
               this.state.tabs.map((item,index)=>
-                <div key={item.id} className="tab-content discovery-items-wrapper">
-                  <PullToRefresh
+                <div key={item.type} className="tab-content discovery-items-wrapper position-relative container">
+                  <Scroll
+                    pullUpLoadMoreData={this.handleLoadMore.bind(this,item)}
+                    doPullDownFresh={this.handleDownRefresh.bind(this,item)}
+                    pullUpLoad
+                    pullDownRefresh
+                    isPullUpTipHide={false}
+                  >
+                    <Masonry
+                      elementType={'ul'}
+                      options={masonryOptions}
+                      disableImagesLoaded={false}
+                      updateOnEachImageLoad={false}
+                      ref={function (c) { this.masonry = this.masonry || c.masonry; }.bind(this)}
+                    >
+                      {
+                        (this.state['list'+item.type] ?
+                        this.state['list'+item.type].map(
+                            (i, j) =>
+                              <li
+                              key={i.id}
+                              data-id={i.id}
+                                className={`item overflow-hidden ${(j + 1) % 2 ? 'item-odd' : 'item-even'}`}
+                                key={i.id}>
+                                  <Link className="link" to={`/discovery/${i.id}`}>
+                                    <DiscItem data={i} type={(j + 1) % 2 ? 'odd' : 'even'} />
+                                  </Link>
+                              </li>
+                          ) : null)
+                      }
+                    </Masonry>
+                  </Scroll>
+                  
+                  {/* <PullToRefresh
                     damping={60}
                     refreshing={this.state['refreshing'+item.type]}
                     onRefresh={this.handleOnFresh.bind(this,item)}
@@ -204,7 +258,7 @@ class DiscoveryDetail extends Component {
                           ) : null)
                       }
                     </Masonry>
-                  </PullToRefresh>
+                  </PullToRefresh> */}
                 </div>
               )
             }
@@ -214,6 +268,6 @@ class DiscoveryDetail extends Component {
     );
   }
 }
-export default DiscoveryDetail;
+export default Discovery;
 
 // export default Discovery;

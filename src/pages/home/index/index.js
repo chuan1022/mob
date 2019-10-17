@@ -20,19 +20,11 @@ import defaultImg from './6.jpg';
 import defaultIcon from './food.png';
 import defaultFood from './png1.png';
 
-
-
 import API from '@/services'
 const app = dva();
 
-const masonryOptions = {
-  // columnWidth: 150,
-  transitionDuration: 0,
-  gutter: 0
-}
-
-@connect(({ global }) => ({
-  global
+@connect(({ global,index }) => ({
+  global,index
 }))
 
 class Home extends Component {
@@ -44,13 +36,20 @@ class Home extends Component {
       handleOnFresh: false,
       activeType:0,
       bannerList:[defaultImg,defaultImg,defaultImg ],
-      storeList:[]
+      isStoreLoading:true
     }
 
   }
 
   componentDidMount() {
-    this.getPosition();
+    const {dispatch} = this.props;
+    
+    dispatch({
+      type: 'global/handleChangeShowTab',
+      payload:true
+    })
+
+    this.getCommStoreList();
   }
   componentDidUpdate(prevProps,prevState){
    
@@ -63,24 +62,6 @@ class Home extends Component {
   getLittBanner(){
     
   }
-  //获取定位
-  getPosition(){
-    this.getCommStoreList()
-      // new BaiduMap().getLocation(point=>{
-      //   //存储经纬度
-      //   this.props.dispatch({
-      //     type: 'global/handleChangeLocationPoint',
-      //     payload:point
-      //   })
-      //   //根据经纬度获取定位信息
-      //   this.props.dispatch({
-      //     type: 'global/getLocationInfo',
-      //     payload:point
-      //   });
-      //   this.getCommStoreList()
-      // })
-   
-  }
   
   //获取推荐商家列表
   getCommStoreList(){
@@ -88,17 +69,23 @@ class Home extends Component {
       lat:this.props.global.locationPoint.lat,
       lng:this.props.global.locationPoint.lng,
     }
-    API.getCommStoreList(para).then(res=>{
-      console.log(res);
+    const {dispatch} = this.props;
+
+     dispatch({
+      type: 'index/getStoreList',
+      payload:para
+    }).then(()=>{
       this.setState({
-        storeList:res
+        isStoreLoading:false
       })
     })
   }
 
   render() {
+
+    const storeList = this.props.index.storeList
     return (
-      <div className="page-home page-bg full-wrapper" id="page-home">
+      <div className="page-home page-bg " id="page-home">
         <div className="main-wrapper">
           {/* search */}
           <div className="top-header">
@@ -292,46 +279,48 @@ class Home extends Component {
               />
             </div>
             <WhiteSpace size="lg"/>
-            
             {/* 精选推荐 */}
-            <div className="recommend-wrapper">
-              <div className="recommend-title text-align-center">
-                <h3 className="text-color-666 font-size-17 line-height-m">精选推荐</h3>
-                <p className="text-color-999 font-size-12 line-height-m">小编为你整理的品质好店</p>
-                <WhiteSpace size="lg"/>
+            {
+              this.state.isStoreLoading?
+              <div>loading</div>:
+              <div className="recommend-wrapper">
+                <div className="recommend-title text-align-center">
+                  <h3 className="text-color-666 font-size-17 line-height-m">精选推荐</h3>
+                  <p className="text-color-999 font-size-12 line-height-m">小编为你整理的品质好店</p>
+                  <WhiteSpace size="lg"/>
+                </div>
+                <div className="recommend-content">
+                  {
+                    storeList.map((item,index)=>
+                    <div key={index}>
+                        <BussCard
+                          storeInfo={{
+                            avatarUrl:item.image,
+                            name: item.title,
+                            stars: item.evaluation,
+                            cost: item.per_capita,
+                            address: '郑东新区东建材',
+                            love_number:100,
+                            distance:item.distance,
+                            delivery:item.is_delivery,
+                            selfGet:item.is_self_get,
+                            isRest:item.is_rest,
+                            goodsList:item.goods
+                          }}
+                          size={104}
+                          showAvatar={item.goods?false:true}
+                          showAddress={false}
+                          showGoods={true}
+                          showRight={false}
+                          showCost1={false}
+                          type='type1'/>
+                      <WhiteSpace size="lg"/>
+                    </div>
+                    )
+                  }
+                </div>
               </div>
-              <div className="recommend-content">
-                {
-                  this.state.storeList.map((item,index)=>
-                  <div key={index}>
-                      <BussCard
-                        storeInfo={{
-                          avatarUrl:item.image,
-                          name: item.title,
-                          stars: item.evaluation,
-                          cost: item.per_capita,
-                          address: '郑东新区东建材',
-                          love_number:100,
-                          distance:item.distance,
-                          delivery:item.is_delivery,
-                          selfGet:item.is_self_get,
-                          isRest:item.is_rest,
-                          goodsList:item.goods
-                        }}
-                        size={104}
-                        showAvatar={item.goods?false:true}
-                        showAddress={false}
-                        showGoods={true}
-                        showRight={false}
-                        showCost1={false}
-                        type='type1'/>
-                    <WhiteSpace size="lg"/>
-                  </div>
-                  )
-                }
-              </div>
-            </div>
-            
+            }
           </div>
         </div>
       </div >
