@@ -10,7 +10,7 @@ const AuthRouter = (props) => {
 
     <Route render={ props => {
       console.log(route,props);
-      return route.auth ?  <Redirect to="/login" />:<Component { ...props } />
+      return route.auth ?  <Redirect to="/" />:<Component { ...props } />
     }} />
   )
 }

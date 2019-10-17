@@ -30,10 +30,13 @@ class Index extends Component {
       activeType:0,
       storeList:[]
     }
-
   }
-
   componentDidMount() {
+    //show tab
+    this.props.dispatch({
+      type: 'global/handleChangeShowTab',
+      payload:true
+    })
     this.getPosition();
   }
   componentDidUpdate(prevProps,prevState){
