@@ -11,7 +11,7 @@ const routes = [
         { path: '/list', component: './home/list' },
         { path: '/search', component: './home/search' },
         { path: '/searchList', component: './home/searchList' },
-
+        { path: '/scroll', component: './home/scroll' },
       ]
   },
   { path: '/login', component: './login' },

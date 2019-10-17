@@ -32,8 +32,9 @@ class Index extends Component {
     }
   }
   componentDidMount() {
-    //show tab
-    this.props.dispatch({
+    const {dispatch} = this.props;
+    
+    dispatch({
       type: 'global/handleChangeShowTab',
       payload:true
     })
@@ -45,8 +46,9 @@ class Index extends Component {
  
   //获取定位
   getPosition(){
-  
+    
     let locationInfo=store.get('locationInfo'),locationPoint=store.get('locationPoint');
+    console.log(locationInfo,locationPoint);
 
     if( !locationInfo || !locationPoint){
       new BaiduMap().getLocation(point=>{
