@@ -6,15 +6,12 @@ import Scroll from 'react-bscroll'
 import 'react-bscroll/lib/react-scroll.css'
 
 import Masonry from 'react-masonry-component';
-import dataList from './dadta';
 import DiscItem from '@/components/discoveryItem'
 import { Sticky,Tabs, PullToRefresh } from 'antd-mobile';
 
 
-import request from 'umi-request';
-import API from '@/services'
 import './index.less';
-import '@/styles/mixins.less';
+
 const app = dva();
 
 const masonryOptions = {
@@ -23,15 +20,14 @@ const masonryOptions = {
   gutter: 0
 }
 
-@connect(({ global }) => ({
-  global
+@connect(({ global ,discovery}) => ({
+  global,discovery
 }))
 
 class Discovery extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tabs: [],
       dataList: [],
       activeType:1,
       page:1,
@@ -44,85 +40,63 @@ class Discovery extends Component {
     console.log('start');
   }
   componentDidMount() {
-      //隐藏tab
-    this.props.dispatch({
+    const {dispatch} = this.props;
+    //隐藏tab
+    dispatch({
       type: 'global/handleChangeShowTab',
       payload:false
     })
-
+    //获取分类
     this.getFindType();
-    this.getAttentionList({
-      type:0
-    })
+
+    //获取推荐列表
+    this.getAttentionList({type:0})
   }
   componentDidUpdate(prevProps,prevState){
     
   }
 
   getFindType(refresh){
-   if(this.state.tabs.length && !refresh) return;
-   API.findType({
+    const {dispatch} = this.props;
+    let params = {
       type:'find'
-    }).then(res=>{
-      let tabs=[];
-      res.forEach(el => {
-        tabs.push({
-          title:el.name,
-          type:el.type
-        })
-      });
+    }
 
-      this.setState({
-        tabs:tabs,
-      })
-
-      console.log(this.state.tabs);
-    }).catch(err=>{
-      console.log(err);
+    dispatch({
+      type: 'discovery/getFindType',
+      payload:params
     })
   }
  
   handleTabChange(tab,index){
-    console.log(tab);
     this.setState({
       activeType:tab.type
     })
-    if(this.state['list'+tab.type]) return;
+    if(this.props.discovery.discovery['list'+tab.type].length>0) return;
     this.getAttentionList(tab)
   }
   
   getAttentionList(options,callback){
-    let para ={
+    let params={
       type:options.type,
       area_id:this.props.global.locationInfo.area_id,
       page:this.state["page"+options.type]||1,
       pageSize:this.state.pageSize
     }
-    console.log(para);
-    
-    API.finding(para).then(res=>{
-      let data ;
-      if(para.page==1){
-        data=[]
-      }else{
-        data=this.state["list"+options.type]||[];
-      }
-      data = data.concat(res)
-      console.log(data)
-      this.setState({
-        ['list'+options.type]:data,
-        ["page"+options.type]:para.page
-      }) 
+    const {dispatch} = this.props;
+
+    dispatch({
+      type: 'discovery/getDiscoveryList',
+      payload:params
+    }).then(()=>{
       if(callback && typeof (callback) ==="function") callback()
     })
   }
+
   //加载更多
   handleLoadMore(options){
-    let page = this.state["page"+options.type]+1;
-
-    
+    let page = (this.state["page"+options.type]||1) +1;
     return new Promise(resolve=>{
-
       this.setState({
         ["page"+options.type]:page
       },()=>{
@@ -142,25 +116,16 @@ class Discovery extends Component {
         ["page"+options.type]:1
       },()=>{
         this.getAttentionList(options,()=>{
-          // this.setState({ 
-          //   ['refreshing'+options.type]: false 
-          // });
+
           resolve()
         })
       })
     })
   }
-  //handle refresh
-  // handleOnFresh(options) {
-    
-  //   if(this.state.scrollDirection==="down"){
-  //     this.handleDownRefresh(options)
-  //   }else if(this.state.scrollDirection==="up"){
-  //       this.handleLoadMore(options)
-  //   }
-  // } 
-
   render() {
+
+    const {tabs}=this.props.discovery
+
     return (
       <div className="page-discovery page-bg" id="page-discovery">
         <div className="discovery-tab vr-tabs">
@@ -179,12 +144,12 @@ class Discovery extends Component {
               height:'40px'
             }}
             initialPage={1}
-            tabs={this.state.tabs}
+            tabs={tabs}
             renderTabBar={props => <Tabs.DefaultTabBar {...props}  />}
             onChange={(tab,index)=>this.handleTabChange(tab,index)}
           >
             {
-              this.state.tabs.map((item,index)=>
+              tabs.map((item,index)=>
                 <div key={item.type} className="tab-content discovery-items-wrapper position-relative container">
                   <Scroll
                     pullUpLoadMoreData={this.handleLoadMore.bind(this,item)}
@@ -192,6 +157,7 @@ class Discovery extends Component {
                     pullUpLoad
                     pullDownRefresh
                     isPullUpTipHide={false}
+                    click
                   >
                     <Masonry
                       elementType={'ul'}
@@ -201,8 +167,8 @@ class Discovery extends Component {
                       ref={function (c) { this.masonry = this.masonry || c.masonry; }.bind(this)}
                     >
                       {
-                        (this.state['list'+item.type] ?
-                        this.state['list'+item.type].map(
+                        (this.props.discovery.discovery['list'+item.type] ?
+                        this.props.discovery.discovery['list'+item.type].map(
                             (i, j) =>
                               <li
                               key={i.id}
@@ -217,48 +183,6 @@ class Discovery extends Component {
                       }
                     </Masonry>
                   </Scroll>
-                  
-                  {/* <PullToRefresh
-                    damping={60}
-                    refreshing={this.state['refreshing'+item.type]}
-                    onRefresh={this.handleOnFresh.bind(this,item)}
-                    distanceToRefresh={40}
-                    indicator={{
-                      deactivate:'上拉加载更多',
-                      activate:'松开加载',
-                      release:'加载中...',
-                      finish:'加载完成'
-                    }}
-                    direction={this.state.scrollDirection}
-                    className="refresh-wrapper"
-                    style={{
-                      overflow:'auto',
-                      height:document.documentElement.clientHeight-40,
-                      paddingTop:'20px'
-                    }}
-                  >
-                    <Masonry
-                      elementType={'ul'}
-                      options={masonryOptions}
-                      disableImagesLoaded={false}
-                      updateOnEachImageLoad={false}
-                      ref={function (c) { this.masonry = this.masonry || c.masonry; }.bind(this)}
-                    >
-                      {
-                        (this.state['list'+item.type] ?
-                        this.state['list'+item.type].map(
-                            (i, j) =>
-                              <li
-                                className={`item overflow-hidden ${(j + 1) % 2 ? 'item-odd' : 'item-even'}`}
-                                key={i.id}>
-                                  <Link className="link" to={`/discovery/${i.id}`}>
-                                    <DiscItem data={i} type={(j + 1) % 2 ? 'odd' : 'even'} />
-                                  </Link>
-                              </li>
-                          ) : null)
-                      }
-                    </Masonry>
-                  </PullToRefresh> */}
                 </div>
               )
             }

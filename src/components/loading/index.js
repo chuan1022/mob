@@ -1,32 +1,17 @@
 import React, { Component } from 'react';
 import styles from './index.less';
-import avatarImg from './6.jpg';
 class Loading extends Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
     static defaultProps = {
-      name: 'user1',
-      avatarUrl: avatarImg,
+
     }
     render() {
         return (
-            <div
-                className={styles.avatar}
-                style={{
-                    width: this.props.size + 'px',
-                    height: this.props.size + 'px'
-                }}
-            >
-                <img
-                    src={this.props.avatarUrl}
-                    alt={this.props.name}
-                    width={this.props.width}
-                    style={{
-                        width: this.props.size + 'px',
-                        height: this.props.size + 'px'
-                    }} />
+            <div >
+              <p className="text-align-center line-height-l text-color-999 font-size-14">loading......</p> 
             </div>
         );
     }

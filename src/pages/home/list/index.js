@@ -9,6 +9,8 @@ import Masonry from 'react-masonry-component';
 
 import SearchCard from '@/components/searchCard';
 import Star from '@/components/star';
+import Loading from '@/components/loading';
+
 import './index.less';
 import '@/styles/mixins.less';
 
@@ -23,8 +25,8 @@ const masonryOptions = {
   gutter: 0
 }
 
-@connect(({ global }) => ({
-  global
+@connect(({ global,list }) => ({
+  global,list
 }))
 
 class List extends Component {
@@ -36,6 +38,7 @@ class List extends Component {
       storeList:new Array(20).fill(''),
       page:1,
       pageSize:10,
+      isStoreLoading:true
     }
 
   }
@@ -70,19 +73,19 @@ class List extends Component {
       pageSize:this.state.pageSize
     }
     console.log(para);
-    
-    API.getOtherStoreList(para).then(res=>{
-      console.log(res);
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'list/getStoreList',
+      payload:para
+    }).then(()=>{
       this.setState({
-        storeList:res
+        isStoreLoading:false
       })
     })
   }
 
   render() {
-
-  
-    
+    const { storeList } = this.props.list;
     return (
       <div className="page-list page-bg full-wrapper" id="page-list">
         <div className="main-wrapper">
@@ -131,40 +134,39 @@ class List extends Component {
                 ))}
               </Carousel>
             </div>
-
-            <div className="stores-wrapper">
-              <Flex wrap="wrap">
-              {
-                this.state.storeList ?
-                  this.state.storeList.map(
-                  (item, index) =>
-                    <div
-                    className={`${index%2?'even':'odd'} item`}
-                    key={item.id}>
-                      <Link className="link" to="/">
-                        <div className="item-img">
-                            <img src={item.image} alt=""/>
-                        </div>
-                        <div className="item-content">
-                          <p className="ellipsis item-title text-color-333 font-size-15 font-bold">{item.title}</p>
-                          <div className="item-info"> 
-                            <Star num={Math.round(item.evaluation)}></Star>
-                            <span 
-                            className="font-size-11 text-color-666 margin-left-10">人均 {Math.floor(item.per_capita)} 元</span>
-                          </div>
-                          <p className="ellipsis font-size-11 text-color-666 item-address">
-                            {item.address}
-                          </p>
-                        </div>
-                      </Link>
-                    </div>) 
-                    : null
-                }
-              </Flex>
-             
-           
-            </div>
-          </div>
+            {
+              this.state.isStoreLoading?
+               <Loading></Loading> :
+               <div className="stores-wrapper">
+               <Flex wrap="wrap">
+               {
+                   storeList.map(
+                   (item, index) =>
+                     <div
+                     className={`${index%2?'even':'odd'} item`}
+                     key={item.id}>
+                       <Link className="link" to="/">
+                         <div className="item-img">
+                             <img src={item.image} alt=""/>
+                         </div>
+                         <div className="item-content">
+                           <p className="ellipsis item-title text-color-333 font-size-15 font-bold">{item.title}</p>
+                           <div className="item-info"> 
+                             <Star num={Math.round(item.evaluation)}></Star>
+                             <span 
+                             className="font-size-11 text-color-666 margin-left-10">人均 {Math.floor(item.per_capita)} 元</span>
+                           </div>
+                           <p className="ellipsis font-size-11 text-color-666 item-address">
+                             {item.address}
+                           </p>
+                         </div>
+                       </Link>
+                     </div>) 
+                 }
+               </Flex>
+             </div> 
+            }
+           </div>
         </div>
       </div >
     );

@@ -19,7 +19,7 @@ API.finding=(params)=> {
 
 //发现的内容
 API.findingDetail=(params)=> {
-  return proxyRequest.get(baseUrl+'/finding/detail', params)
+  return proxyRequest.get(baseUrl+'/find/detail', params)
 };
 
 export default API

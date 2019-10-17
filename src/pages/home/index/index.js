@@ -6,12 +6,9 @@ import store from 'store'
 
 import { Carousel, WhiteSpace,Flex,NoticeBar,Icon,Grid} from 'antd-mobile';
 
-import {findType,finding} from '@/services/discovery';
-
-import VrtabBar from '@/components/tabbar';
 import BussCard from '@/components/bussCard';
-import BaiduMap from '@/components/baiduMap';
 import SearchCard from '@/components/searchCard';
+import Loading from '@/components/loading';
 
 import './index.less';
 import '@/styles/mixins.less';
@@ -280,19 +277,19 @@ class Home extends Component {
             </div>
             <WhiteSpace size="lg"/>
             {/* 精选推荐 */}
-            {
-              this.state.isStoreLoading?
-              <div>loading</div>:
               <div className="recommend-wrapper">
                 <div className="recommend-title text-align-center">
                   <h3 className="text-color-666 font-size-17 line-height-m">精选推荐</h3>
                   <p className="text-color-999 font-size-12 line-height-m">小编为你整理的品质好店</p>
                   <WhiteSpace size="lg"/>
                 </div>
-                <div className="recommend-content">
+                {
+                   this.state.isStoreLoading?
+                   <Loading></Loading> :
+                   <div className="recommend-content">
                   {
                     storeList.map((item,index)=>
-                    <div key={index}>
+                      <div key={index}>
                         <BussCard
                           storeInfo={{
                             avatarUrl:item.image,
@@ -314,13 +311,15 @@ class Home extends Component {
                           showRight={false}
                           showCost1={false}
                           type='type1'/>
-                      <WhiteSpace size="lg"/>
-                    </div>
-                    )
-                  }
-                </div>
+                        <WhiteSpace size="lg"/>
+                      </div>
+                      )
+                    }
+                  </div>
+                }
+                
               </div>
-            }
+            
           </div>
         </div>
       </div >

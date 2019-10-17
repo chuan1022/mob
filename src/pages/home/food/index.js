@@ -4,16 +4,15 @@ import dva, {connect} from 'dva';
 import Link from 'umi/link';
 
 import { Tabs,WhiteSpace ,Carousel,Accordion,List,Switch,Icon,StickyContainer, Sticky } from 'antd-mobile';
-import Masonry from 'react-masonry-component';
-import DiscItem from '@/components/discoveryItem';
+
 import SearchCard from '@/components/searchCard';
 import BussCard from '@/components/bussCard';
+import Loading from '@/components/loading';
 
 import defaultImg from './无商品.png';
-import request from 'umi-request';
-import API from '@/services'
+
 import './index.less';
-import '@/styles/mixins.less';
+
 const app = dva();
 
 const masonryOptions = {
@@ -22,22 +21,19 @@ const masonryOptions = {
   gutter: 0
 }
 
-@connect(({ global }) => ({
-  global
+@connect(({ global,food }) => ({
+  global,food
 }))
 
 class FoodList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tabs: [],
-      storeList: [],
       handleOnFresh: false,
       activeType:0,
       open:false,
       activeFirList:0,
       activeSecList:0,
-      navData:[],
       firClassId:0,
       secClassId:0,
       page:1,
@@ -58,7 +54,6 @@ class FoodList extends Component {
         lat:this.props.global.locationPoint.lat,
         // is_self_get:false
       }, 
-      storeList:[],  //店铺列表
       bannerList:[defaultImg,defaultImg,defaultImg ],
       filterText:'综合排序',
       filterTypes:[{
@@ -82,11 +77,6 @@ class FoodList extends Component {
       }],
       activePop:''
     }
-    this.handelTabClick = this.handelTabClick.bind(this);
-    this.handleFirNavClick = this.handleFirNavClick.bind(this);
-    this.handleSecNavClick = this.handleSecNavClick.bind(this);
-    this.getStoreClassList = this.getStoreClassList.bind(this);
-    this.setStoreListParams = this.setStoreListParams.bind(this);
   }
 
   componentDidMount() {
@@ -96,8 +86,6 @@ class FoodList extends Component {
     
   }
   toggleMask(el){
-    console.log(el);
-    
     this.setState({
       showMask:!this.state.showMask
     })
@@ -114,35 +102,21 @@ class FoodList extends Component {
       activePop:''
     })
   }
-  getTabscList(data){
-    let tabs=[];
-    data.forEach(el => {
-      tabs.push({
-        title:el.name,
-        id:el.id
-      })
-    });
 
-    this.setState({
-      tabs:tabs,
-    })
-  }
   getStoreClassList(){
+    const {dispatch} = this.props;
 
     let params={
       type:'food',
       area_id:this.props.global.locationInfo.area_id
     }
 
-    API.getStoreClassList(params).then(res=>{
-      console.log(res);
-      if(res && res.recommend) this.getTabscList(res.recommend);
-      this.setState({
-        navData:res.list,
-        // secId:res.recommend[0].id
-      });
+    dispatch({
+      type: 'food/getStoreClassList',
+      payload:params
+    }).then(()=>{
       this.setStoreListParams({
-        class_id:res.recommend[0].id
+        class_id:this.props.food.tabs[0].id
       })
     })
   }
@@ -158,7 +132,7 @@ class FoodList extends Component {
   handleChangeClassID(val){
     
   }
-
+  
   handleOnFresh() {
     this.setState({ refreshing: true });
     setTimeout(() => {
@@ -183,6 +157,8 @@ class FoodList extends Component {
     })
   }
   handleSecNavClick(firIndex,secIndex,firId,secId){
+    const {dispatch,food} = this.props;
+
     //切换分类
     this.setState({
       activeSecList:secIndex,
@@ -190,7 +166,11 @@ class FoodList extends Component {
       secClassId:secId
     })
     //切换显示的二级分类
-    this.getTabscList(this.state.navData[firIndex].children);
+    dispatch({
+      type: 'food/handleChangeTabList',
+      payload:food.navData[firIndex].children
+    })
+
     //更新params,并请求新数据
     this.setStoreListParams({
       class_id:secId
@@ -205,8 +185,7 @@ class FoodList extends Component {
     let params = Object.assign(this.state.params,options)
     let filterText=this.state.filterTypes.find((el)=>{return el.value==params.sort_by}).title
     this.setState({
-      params:params,
-     
+      params:params,   
       filterText:filterText
     })
 
@@ -245,11 +224,17 @@ class FoodList extends Component {
     //   lng: 113.64964385,
     //   class_id:1
     // }
-    API.getStoreList(this.state.params).then(res=>{
-      console.log(res);
-      this.setState({
-        storeList:res
-      })
+    // API.getStoreList(this.state.params).then(res=>{
+    //   console.log(res);
+    //   this.setState({
+    //     storeList:res
+    //   })
+    // })
+    const {dispatch} = this.props;
+
+    dispatch({
+      type: 'food/getStoreList',
+      payload:this.state.params
     })
 
   }
@@ -262,6 +247,7 @@ class FoodList extends Component {
     })
   }
   render() {
+    const {tabs,navData,storeList,isLoading} = this.props.food
     return (
       <div className="page-food page-bg positon-relative" id="page-food">
 
@@ -291,7 +277,7 @@ class FoodList extends Component {
                   'display': 'none'
                 }}
                 renderTabBar={props => <Tabs.DefaultTabBar {...props} page={3} />}
-                tabs={this.state.tabs}
+                tabs={tabs}
                 renderTab={tab=>
                   <div className={`${this.state.secClassId===tab.id?'active':''} tab-item`}>{tab.title}</div>
                 }
@@ -316,7 +302,7 @@ class FoodList extends Component {
               }}
               className="panale-left">
                 <ul className="firstList">
-                  {this.state.navData.map((el,index)=>
+                  {navData.map((el,index)=>
                     <li 
                     onClick={this.handleFirNavClick.bind(this,index)}
                     className={`${this.state.activeFirList===index ?'active':''} item flex align-items-center justify-content-between`} 
@@ -329,7 +315,7 @@ class FoodList extends Component {
               </div>
               <div className="panle-right flex-1">
                 <div>
-                  {this.state.navData.map((el,index)=>
+                  {navData.map((el,index)=>
                   this.state.activeFirList===index && 
                   <ul className="secList" key={index}>
                     {
@@ -492,8 +478,8 @@ class FoodList extends Component {
         {/* 列表 */}
         <div className="store-list-wrapper padding-row-15">
           {
-            this.state.storeList.length>0?
-            this.state.storeList.map((item,index)=>(
+            isLoading ? <Loading></Loading>:
+            storeList.map((item,index)=>(
               <BussCard
                 key={item.id}
                 storeInfo={{
@@ -519,7 +505,6 @@ class FoodList extends Component {
                   margin:"10px 0"
                 }}/>
             ))
-            :null
           }
         </div>
         {/* mask */}

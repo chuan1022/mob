@@ -7,19 +7,20 @@ import './index.less';
 import '@/styles/mixins.less';
 import '@/styles/vr-antd.less';
 
-import Masonry from 'react-masonry-component';
-import dataList from './dadta';
-
 import UserCard from '@/components/UserCard';
 import CommentCard from '@/components/CommentCard';
 import BussCard from '@/components/bussCard';
 import Avatar from '@/components/avatar';
 import { WhiteSpace,InputItem,List } from 'antd-mobile';
-import { createForm, formShape } from 'rc-form';
 
-import API from '@/services';
+import dva, {connect} from 'dva'
+const app = dva();
 
-class Discovery extends Component {
+@connect(({ global ,discoveryDetail}) => ({
+  global,discoveryDetail
+}))
+
+class DiscoveryDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -54,19 +55,7 @@ class Discovery extends Component {
       text:'state这家店真不错'
     }
   }
-  static propTypes = {
-    form: formShape
-  }
-  getData(){
-    let params={
-      id:this.state.id
-    }
-    console.log(params);
-    API.findingDetail(params).then(res=>{
-      console.log(res);
-      
-    })
-  }
+
   componentDidMount() {
 
     const { match } = this.props;
@@ -79,8 +68,19 @@ class Discovery extends Component {
       });
     }
   }
+  getData(){
+
+    const {dispatch} = this.props;
+    let params={
+      id:this.state.id
+    }
+    dispatch({
+      type: 'discoveryDetail/getFindingDetail',
+      payload:params
+    })
+  }
+ 
   render() {
-    const { getFieldProps, getFieldError } = this.props.form;
     
     return (
       <div className="page-discoverydetail has-bottom-bar" id="page-discoverydetail">
@@ -216,4 +216,4 @@ class Discovery extends Component {
   }
 }
 
-export default createForm()(Discovery);
+export default DiscoveryDetail;

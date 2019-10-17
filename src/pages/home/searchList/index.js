@@ -4,16 +4,12 @@ import dva, {connect} from 'dva';
 import Link from 'umi/link';
 
 import { Tabs,WhiteSpace ,Carousel,Accordion,List,Switch,Icon,StickyContainer, Sticky } from 'antd-mobile';
-import Popup from "reactjs-popup";
-import Masonry from 'react-masonry-component';
 
-import DiscItem from '@/components/discoveryItem';
 import SearchCard from '@/components/searchCard';
 import BussCard from '@/components/bussCard';
+import Loading from '@/components/loading';
 
 import defaultImg from './无商品.png';
-import request from 'umi-request';
-import API from '@/services'
 import './index.less';
 import '@/styles/mixins.less';
 const app = dva();
@@ -24,8 +20,8 @@ const masonryOptions = {
   gutter: 0
 }
 
-@connect(({ global }) => ({
-  global
+@connect(({ global,searchList }) => ({
+  global,searchList
 }))
 
 class SearchListPage extends Component {
@@ -55,9 +51,6 @@ class SearchListPage extends Component {
         is_self_get:0,
         industry_id:0
       }, 
-      typeList:[],  //行业列表
-      regionList:[], //地区列表
-      storeList:[],  //店铺列表
       bannerList:[defaultImg,defaultImg,defaultImg ],
       options : [
         { value: 'complex', label: '综合排序' },
@@ -104,23 +97,22 @@ class SearchListPage extends Component {
     this.getRegionList();
     this.getStoreType();
   }
-  //行业类型
+  //行业列表
   getStoreType(){
-    API.getStoreType().then(res=>{
-      this.setState({
-        typeList:res
-      });
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'searchList/getStoreType'
     })
   }
   //地区列表
   getRegionList(){
-    API.getRegionList({
+    let params = {
       area_id:this.props.global.locationInfo.area_id
-    }).then(res=>{
-      console.log(res);
-      this.setState({
-        regionList:res
-      })
+    }
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'searchList/getRegionList',
+      payload:params
     })
   }
   //获取筛选列表
@@ -180,17 +172,22 @@ class SearchListPage extends Component {
       activePop:'',
       filterText:filterText
     })
-    if(getdata) this.getStoreList();
+    if(getdata) this.getStoreList(params);
   }
 
-  getStoreList(){
-    console.log(this.state.params);
+  getStoreList(params){
+    console.log(params);
     //美食和其他接口不一样 根据路由切换
-    API.getCommStoreList(this.state.params).then(res=>{
-      console.log(res);
-      this.setState({
-        storeList:res||[]
-      })
+    // API.getCommStoreList(this.state.params).then(res=>{
+    //   console.log(res);
+    //   this.setState({
+    //     storeList:res||[]
+    //   })
+    // })
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'searchList/getCommStoreList',
+      payload:params
     })
   }
   handleMenuOpen(){
@@ -213,7 +210,8 @@ class SearchListPage extends Component {
 
   }
   render() {
-
+    const {storeList,typeList,regionList,storeListLoading} = this.props.searchList;
+    
     return (
       <div className="page-searchlist bg-color-white  positon-relative" id="page-searchlist">
         <div className="fixed-header">
@@ -264,7 +262,7 @@ class SearchListPage extends Component {
                 <div className="pop-content">
                 <List className="my-list">
                   {
-                    this.state.regionList.map((item,index)=>
+                    regionList.map((item,index)=>
                     <List.Item 
                     key={item.id}
                     onClick={this.setStoreListParams.bind(this,{region_id:item.id})}>
@@ -301,7 +299,7 @@ class SearchListPage extends Component {
               <div className="pop-content padding-row-15">
                 <ul className="tag-list">
                   {
-                    this.state.typeList.map((item,index)=>
+                    typeList.map((item,index)=>
                     <li 
                     onClick={this.handleTagClick.bind(this,item.id)}
                     key={item.id} 
@@ -320,19 +318,18 @@ class SearchListPage extends Component {
                 </div>
               </div>:null
             }
-              
             </div>
           </div>
-          
         </div>
      
         {/* 列表 */}
         <div className="store-list-wrapper padding-row-15">
-          {this.state.storeList.length>0?
-            this.state.storeList.map((item,index)=>(
-              <div key={item.id}>
-                <BussCard
-                  storeInfo={{
+          {
+            storeListLoading?<Loading></Loading>:
+              storeList.map((item,index)=>(
+                <div key={item.id}>
+                  <BussCard
+                    storeInfo={{
                     avatarUrl:item.image,
                     name: item.title,
                     stars: item.evaluation,
@@ -345,22 +342,21 @@ class SearchListPage extends Component {
                     isRest:item.is_rest,
                     goodsList:item.goods,
                     rest:1
-                  }}
+                    }}
 
-                  size={75}
-                  showAvatar={true}
-                  showRight={false}
-                  showCost2={false}
-                  showTags={false}
-                  showDistance={false}
-                  wrapperStyle={{
-                    borderBottom:'1px solid #ECEBEB',
-                    borderRadius: 'unset',
-                  }}/>
-              </div>
-             
-            )):null}
-        </div>
+                    size={75}
+                    showAvatar={true}
+                    showRight={false}
+                    showCost2={false}
+                    showTags={false}
+                    showDistance={false}
+                    wrapperStyle={{
+                      borderBottom:'1px solid #ECEBEB',
+                      borderRadius: 'unset',
+                    }}/>
+                </div>
+              ))}
+           </div>
 
         {/* mask */}
         {

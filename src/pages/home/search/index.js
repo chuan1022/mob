@@ -10,14 +10,14 @@ import { WhiteSpace,Icon} from 'antd-mobile';
 
 
 import SearchCard from '@/components/searchCard';
-
+import Loading from '@/components/loading';
 import API from '@/services'
 import './index.less';
 import '@/styles/mixins.less';
 const app = dva();
 
-@connect(({ global }) => ({
-  global
+@connect(({ global,search }) => ({
+  global,search
 }))
 
 class SearchPage extends Component {
@@ -26,13 +26,14 @@ class SearchPage extends Component {
     this.state = {
       hotList:[],
       historyList:[],
-      keyword:""
+      keyword:"",
+      isLoading:true
     }
     this.handleInputChang = this.handleInputChang.bind(this);
   }
 
   componentDidMount() {
-    this.getHistoryList();
+    // this.getHistoryList();
     this.getHotSearch();
   }
   componentDidUpdate(prevProps,prevState){
@@ -49,31 +50,37 @@ class SearchPage extends Component {
     this.routerToNext(this.state.keyword)
   }
   getHotSearch(){
-    console.log(this.state.params);
-    let params={
+    let para={
       area_id:this.props.global.locationInfo.area_id,
       type:0  //0=通用,1=美食,2=其他
     }
-    API.getHotSearch(params).then(res=>{
-      console.log(res);
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'search/getHotSearch',
+      payload:para
+    }).then(()=>{
       this.setState({
-        hotList:res
+        isLoading:false
       })
     })
   }
   setHistoryList(str){
-    let list=store.get('historyList')||[];
-    list.unshift(str);
-    store.set('historyList',list);
-    this.getHistoryList();
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'search/addHistory',
+      payload:str
+    })
   }
   clearHistoryList(){
-    store.set('historyList',[]);
-    this.getHistoryList();
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'search/clearHistory'
+    })
   }
   getHistoryList(){
-    this.setState({
-      historyList:store.get('historyList')||[]
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'search/getHistory'
     })
   }
   handleTagClick(keyword){
@@ -81,8 +88,6 @@ class SearchPage extends Component {
     this.routerToNext(keyword)
   }
   routerToNext(keyword){
-    console.log('搜索'+keyword);
-   
     router.push({ 
       pathname: '/searchlist',
       query:{
@@ -91,6 +96,7 @@ class SearchPage extends Component {
     })
   }
   render() {
+    const { hotSearchList,historySearchList } = this.props.search
     return (
       <div className="page-search positon-relative bg-color-white" id="page-search">
         <div className="padding-row-15">
@@ -107,15 +113,19 @@ class SearchPage extends Component {
           </div>
           <div className="hot-search-wrapper">
             <p className="font-size-15 text-color-333 font-bold">热门搜索</p>
-            <ul className="tag-list">
-              {
-                this.state.hotList.map((item,index)=>(
-                    <li 
-                    onClick={this.handleTagClick.bind(this,item)} 
-                    className="tag" key={index}>{item}</li>
-                ))
-              }
-            </ul>
+            {
+               this.state.isLoading?
+               <Loading></Loading> :
+               <ul className="tag-list">
+                {
+                  hotSearchList.map((item,index)=>(
+                      <li 
+                      onClick={this.handleTagClick.bind(this,item)} 
+                      className="tag" key={index}>{item}</li>
+                  ))
+                }
+              </ul>
+            }
           </div>
           <div className="history-search-wrapper"> 
             <p className="font-size-15 text-color-333 font-bold flex justify-content-between align-items-center">
@@ -124,8 +134,8 @@ class SearchPage extends Component {
             </p>
             <ul className="tag-list">
               {
-                this.state.historyList.length>0?
-                this.state.historyList.map((item,index)=>(
+                historySearchList.length>0?
+                historySearchList.map((item,index)=>(
                     <li  
                     onClick={this.handleTagClick.bind(this,item)}
                     className="tag" key={index}>{item}</li>
