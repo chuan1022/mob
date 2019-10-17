@@ -14,7 +14,11 @@ export default  {
       area_id: 0,
       city_name: "",
     },
-
+    user:{
+      username:'user',
+      avatar:"",
+      id:10
+    },
     locationPoint:{
       lat:'',
       lng:''

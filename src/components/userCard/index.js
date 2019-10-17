@@ -10,7 +10,8 @@ class DiscItem extends Component {
     static defaultProps = {
         user: {
             name: 'user1',
-            fansNum: 100
+            fansNum: 100,
+            avatar:''
         },
         size: 40
     }
@@ -18,7 +19,7 @@ class DiscItem extends Component {
         return (
             <div className={`${styles['user-card']} flex justify-content-between align-items-center`}>
                 <div className={`${styles['card-left']} flex `}>
-                    <Avatar size={40} />
+                    <Avatar size={40} avatarUrl={this.props.user.avatar}/>
                     <div
                         style={{
                             'paddingLeft': '10px'

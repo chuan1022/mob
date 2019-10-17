@@ -31,4 +31,15 @@ API.postArticleCommentLike=(params)=> {
   return proxyRequest.post(baseUrl+'/like/article/comment', params)
 };
 
+//收藏，取消收藏
+API.postArticleFavorite=(params)=> {
+  return proxyRequest.post(baseUrl+'/article/favorites', params)
+};
+
+//关注、取消关注作者
+API.postFollowAuthor=(params)=> {
+  return proxyRequest.post(baseUrl+'/follow/author', params)
+};
+
+
 export default API
