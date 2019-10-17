@@ -31,7 +31,8 @@ class DiscoveryDetail extends Component {
   }
 
   componentDidMount() {
-
+    console.log(111);
+    
     const { match, dispatch}  = this.props;
 
     dispatch({
@@ -96,8 +97,7 @@ class DiscoveryDetail extends Component {
       isFavorite, //是否收藏
       isLoading
     } = this.props.discoveryDetail
-    console.log(detail);
-    
+
 //     avatar: "ofWEE8puYPCIJzUFIocRGTcsz2BedsyTgTMfNMI869bzjvrjpinOgibqy2TNifpbf5VsTRnTA80uM3sxK3XDliy6mRA14AOIjrU4"
 // follow_num: 0
 // id: 4
@@ -107,7 +107,8 @@ class DiscoveryDetail extends Component {
      
       <div className="page-discoverydetail has-bottom-bar" id="page-discoverydetail">
         {
-          isLoading && detail ? <Loading></Loading>:
+          isLoading ? <Loading></Loading>:
+          
           <div>
             <WhiteSpace />
             <UserCard
@@ -242,6 +243,7 @@ class DiscoveryDetail extends Component {
               </div>
             </div>
           </div>
+        
         }
       </div >
     );
