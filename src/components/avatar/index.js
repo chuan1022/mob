@@ -21,7 +21,7 @@ class Avatar extends Component {
             >
                 <img
                     src={this.props.avatarUrl}
-                    alt={this.props.name}
+                    alt={this.props.alt}
                     width={this.props.width}
                     style={{
                         width: this.props.size + 'px',

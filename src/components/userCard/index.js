@@ -13,7 +13,12 @@ class DiscItem extends Component {
             fansNum: 100,
             avatar:''
         },
-        size: 40
+        size: 40,
+        time:'2019-01-01',
+        isFollow:false
+    }
+    handleClickFollow(){
+      
     }
     render() {
         return (
@@ -32,15 +37,25 @@ class DiscItem extends Component {
                                     'marginRight': '24px'
                                 }}
                                 className="font-size-12">粉丝：{this.props.user.fansNum}</span>
-                            <span className="font-size-14">2019.10.22</span>
+                            <span className="font-size-13">{this.props.time}</span>
                         </p>
                     </div>
                 </div>
                 <div className={`${styles['card-right']}`}>
-                    <Button inline size="small" disabled>已关注</Button>
+                  {
+                    this.props.isFollow?
+                    <Button 
+                    onClick={this.props.handleClickFollow.bind(this)} 
+                    inline 
+                    className="button-disabled"
+                    size="small">已关注</Button>:
                     <Button
-                        activeClassName="vr-btn-theme-active"
-                        type="primary" inline size="small" >关注</Button>
+                    onClick={this.props.handleClickFollow.bind(this)}
+                    activeClassName="vr-btn-theme-active"
+                    type="primary" 
+                    inline 
+                    size="small" >关注</Button>
+                  }
                 </div>
             </div >
         );

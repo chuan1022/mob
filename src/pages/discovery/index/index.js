@@ -81,7 +81,8 @@ class Discovery extends Component {
       type:options.type,
       area_id:this.props.global.locationInfo.area_id,
       page:this.state["page"+options.type]||1,
-      pageSize:this.state.pageSize
+      pageSize:this.state.pageSize,
+      user_id:this.props.global.user.id
     }
     const {dispatch} = this.props;
 

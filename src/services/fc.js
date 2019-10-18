@@ -1,7 +1,4 @@
 import proxyRequest from './request';
-import { apiBase } from '@/utils/baseServer';
-
-
 let API = {
 
 }

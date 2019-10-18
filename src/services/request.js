@@ -57,7 +57,7 @@ proxyRequest.get = (url, params, options, showError) => {
   });
 };
 
-proxyRequest.post = (url, data, options, showError) => {
+proxyRequest.post = (url, params, options, showError) => {
   // options = options || {};
   // options.body = data || {};
   // options.method = 'POST';
@@ -66,7 +66,7 @@ proxyRequest.post = (url, data, options, showError) => {
     params:params
   })
   .then(function (response) {
-    return response.data;
+    return response;
   })
   .catch(function (error) {
     return error;

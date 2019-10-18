@@ -15,9 +15,9 @@ export default  {
       city_name: "",
     },
     user:{
-      username:'user',
-      avatar:"",
-      id:10
+      username:'渔船',
+      avatar:"https://coding-net-production-static-ci.codehub.cn/WM-TEXT-AVATAR-DRrTfqjDTUXKgoftymgJ.jpg",
+      id:11
     },
     locationPoint:{
       lat:'',

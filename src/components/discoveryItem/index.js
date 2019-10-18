@@ -44,13 +44,13 @@ class DiscItem extends Component {
                             // avatarUrl={this.props.data.author_avatar}
                             avatarUrl={defaultImge}
                             />
-                            <span className="ellipsis padding-l6">
+                            <span className="ellipsis padding-l6 text-color-333 font-size-11">
                                 {this.props.data.author_name}
                             </span>
                         </div>
                         <span
-                          className={`${styles['item-zan']} ${this.props.data.is_like?styles['item-zan-active']:''}`}>
-                          {this.props.data.pageview}
+                          className={`${styles['item-zan']} ${this.props.data.is_like?styles['item-zan-active']:''} text-color-999`}>
+                          {this.props.data.like_num}
                         </span>
                     </div>
                 </div>

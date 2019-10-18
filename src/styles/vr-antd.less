@@ -8,10 +8,23 @@
 
     //按钮
     .am-button{
-        &.am-btn-disabled{
-            background:rgba(244,244,244,1);
-            color:#F4F4F4;
+        &.am-button-disabled{
+            background:#F4F4F4;
+            color:#999999;
             opacity: 1;
+            border: none;
+            &:before{
+              content: none !important;
+            }
+        }
+        &.button-disabled{
+          background:#F4F4F4;
+          color:#999999;
+          opacity: 1;
+          border: none;
+          &:before{
+            content: none !important;
+          }
         }
     }
     .am-button-primary{
@@ -34,5 +47,49 @@
         border-radius: 14px;
         line-height: 28px;
     }
+    //tabs
+    .vr-tabs{
+      .am-tabs-default-bar-nextpage,
+      .am-tabs-default-bar-prevpage{
+          display: none;
+      }
+        .am-tabs-tab-bar-wrap{
+            position: relative;
+          &:after{
+            content: '';
+            display: block;
+             height: 1px;
+             bottom: 0;
+             left: 0;
+             width: 100%;
+             height: 1px;
+             background: #ECEBEB;
+          }
+          .am-tabs-default-bar-tab{
+            position: relative;
+              &:after{
+                  content: '';
+                  height: 3px !important; 
+                  background-color: #ED6C2D  !important; 
+                  width: 0 !important; 
+                  left: 50%;
+                  bottom: 0;
+                  position: absolute;
+                  transform: translateX(-50%);
+                  transition: all .3s ease-in-out;
+                  transform-origin: center;
+              }
+              &.am-tabs-default-bar-tab-active{
+                font-weight: bold;
+                &:after{
+                    width: 20px !important; 
+                    height: 3px;
+                    left: 50%;
+                    margin-left: -10px;
+                }
+            }
+          }   
+        }
+       }
 
 }

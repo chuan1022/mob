@@ -4,7 +4,7 @@ import {Toast} from 'antd-mobile';
 import store from 'store';
 const ERR_CODE = 0;
 export default  {
-  namespace: 'discoveryDetail',
+  namespace: 'foodStore',
   state: {
     detail:null,
     commentList:[],

@@ -34,6 +34,13 @@ export default {
             '^/scenter':''
           }
         },
+        '/fc': {
+          target: 'http://dev.gateway.360vrsh.com/fc/api',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/fc':''
+          }
+        },
     },
     routes: routes,
     alias: {
